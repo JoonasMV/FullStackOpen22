@@ -1,15 +1,7 @@
+const { response } = require("express")
 const express = require("express")
-const responseTime = require('response-time')
 
 const app = express()
-
-app.use(responseTime((req, res, time) => {
-  console.log(`${req.method} ${req.url} ${time}`)
-  console.log(time)
-  return (
-    time
-  )
-}))
 
 let persons =  [
   {
@@ -38,13 +30,39 @@ app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
 
-app.get('/info', (req, res) => {
-  res.send("test")
-  console.log("asd",responseTime())
+app.get('/api/persons/:id', (req,res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+
+  if (person) {
+    res.json(person)
+  } else {
+    res.status(404).end()
+  }
 })
 
+app.get('/info', (req, res) => {
+  const people = persons.length
+  const html = `
+  <div>Phonebook has info for ${people} people<div>
+  <div>${Date()}<div>
+  `
+  res.send(html)
+})
 
-console.log("test")
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = persons.find(person => person.id === id)
+
+  persons = persons.filter(person => person.id !== id)
+
+  if (person) {
+    res.status(204).end()
+  } else {
+    res.status(404).end()
+  }
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
