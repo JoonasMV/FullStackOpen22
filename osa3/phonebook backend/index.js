@@ -2,6 +2,7 @@ const { response } = require("express")
 const express = require("express")
 
 const app = express()
+app.use(express.json())
 
 let persons =  [
   {
@@ -61,6 +62,30 @@ app.delete('/api/persons/:id', (req, res) => {
   } else {
     res.status(404).end()
   }
+})
+
+const generateID = () => Math.ceil(Math.random() * 100)
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  console.log("log1",body)
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: "content missing"
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateID(),
+  }
+
+  persons = persons.concat(person)
+
+  res.json(person)
 })
 
 const PORT = 3001
