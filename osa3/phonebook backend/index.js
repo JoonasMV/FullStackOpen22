@@ -1,8 +1,15 @@
 const { response } = require("express")
 const express = require("express")
+const morgan = require("morgan")
 
 const app = express()
+
 app.use(express.json())
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :data"))
+
+morgan.token("data", (req, res) => {
+  return req.method === "POST" ? JSON.stringify(req.body) : " "
+})
 
 let persons =  [
   {
@@ -34,7 +41,7 @@ app.get('/api/persons', (req, res) => {
 app.get('/api/persons/:id', (req,res) => {
   const id = Number(req.params.id)
   const person = persons.find(person => person.id === id)
-
+  
   if (person) {
     res.json(person)
   } else {
@@ -69,22 +76,41 @@ const generateID = () => Math.ceil(Math.random() * 100)
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
-  console.log("log1",body)
-
-  if (!body.name) {
-    return res.status(400).json({
-      error: "content missing"
-    })
-  }
-
   const person = {
     name: body.name,
     number: body.number,
     id: generateID(),
   }
 
-  persons = persons.concat(person)
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: "content missing"
+    })
+  }
 
+  let dupName = false
+  let dupNumber = false
+  persons.forEach(element => {    
+    if (element.name === person.name) {
+      dupName = true
+    }
+    if (element.number === person.number) {
+      dupNumber = true
+    }
+  })
+
+  if (dupName) {
+    return res.status(400).json({
+      error: "name must be unique"
+    }).end()
+  }
+  if (dupNumber) {
+    return res.status(400).json({
+      error: "number must be unique"
+    }).end()
+  }
+
+  persons = persons.concat(person)
   res.json(person)
 })
 
