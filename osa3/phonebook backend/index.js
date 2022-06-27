@@ -5,7 +5,6 @@ require("dotenv").config()
 const Person = require("./models/person")
 
 const morgan = require("morgan")
-const { response } = require("express")
 
 app.use(express.json())
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :data"))
@@ -22,36 +21,34 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/api/persons/:id', (req,res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
   .then(person => {
-    res.json(person)
+    if (note) {
+      res.json(person)
+    } else {
+      res.status(404).end()
+    }
   })
+  .catch(error => next(error))
 })
 
-app.get('/info', (req, res) => {
-  const people = persons.length
-  const html = `
-  <div>Phonebook has info for ${people} people<div>
-  <div>${Date()}<div>
-  `
-  res.send(html)
-})
+// app.get('/info', (req, res) => {
+//   const people = persons.length
+//   const html = `
+//   <div>Phonebook has info for ${people} people<div>
+//   <div>${Date()}<div>
+//   `
+//   res.send(html)
+// })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-
-  persons = persons.filter(person => person.id !== id)
-
-  if (person) {
-    res.status(204).end()
-  } else {
-    res.status(404).end()
-  }
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
 })
-
-const generateID = () => Math.ceil(Math.random() * 1000000)
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
@@ -65,32 +62,30 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({error: "content missing" })
   }
 
-  // let dupName = false
-  // let dupNumber = false
-  // persons.forEach(element => {    
-  //   if (element.name === person.name) {
-  //     dupName = true
-  //   }
-  //   if (element.number === person.number) {
-  //     dupNumber = true
-  //   }
-  // })
-
-  // if (dupName) {
-  //   return res.status(400).json({
-  //     error: "name must be unique"
-  //   }).end()
-  // }
-  // if (dupNumber) {
-  //   return res.status(400).json({
-  //     error: "number must be unique"
-  //   }).end()
-  // }
-
-  person.save().then(savedPerson => {
+  person.save()
+  .then(savedPerson => {
     res.json(savedPerson)
   })
+  .catch(error => next(error))
 })
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message)
+
+  if (error.name === "CastError") {
+    return res.status(400).send({ error: "malformatted id" })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: "unknown endpoint" })
+}
+
+app.use(unknownEndpoint)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
