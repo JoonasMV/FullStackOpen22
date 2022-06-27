@@ -1,10 +1,7 @@
-require("dotenv").config()
 const { response } = require("express")
 const express = require("express")
 const morgan = require("morgan")
 const cors = require("cors")
-const mongoose = require('mongoose')
-const Person = require("./models/person")
 
 const app = express()
 
@@ -17,33 +14,35 @@ morgan.token("data", (req, res) => {
   return req.method === "POST" ? JSON.stringify(req.body) : " "
 })
 
-let persons =  [
-  {
-    "name": "Arto Hellas",
-    "number": "040-123456",
-    "id": 1
-  },
-  {
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523",
-    "id": 2
-  },
-  {
-    "name": "Dan Abramov",
-    "number": "12-43-234345",
-    "id": 3
-  },
-  {
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122",
-    "id": 4
-  }
-]
+// let persons =  [
+//   {
+//     "name": "Arto Hellas",
+//     "number": "040-123456",
+//     "id": 1
+//   },
+//   {
+//     "name": "Ada Lovelace",
+//     "number": "39-44-5323523",
+//     "id": 2
+//   },
+//   {
+//     "name": "Dan Abramov",
+//     "number": "12-43-234345",
+//     "id": 3
+//   },
+//   {
+//     "name": "Mary Poppendieck",
+//     "number": "39-23-6423122",
+//     "id": 4
+//   }
+// ]
+
+// app.get('/api/persons', (req, res) => {
+//   res.json(persons)
+// })
 
 app.get('/api/persons', (req, res) => {
-  Person.find({}).then(persons => {
-    response.json(persons)
-  })
+  res.json(persons)
 })
 
 app.get('/api/persons/:id', (req,res) => {
@@ -122,7 +121,7 @@ app.post('/api/persons', (req, res) => {
   res.json(person)
 })
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

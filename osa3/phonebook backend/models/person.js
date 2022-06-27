@@ -1,3 +1,5 @@
+const mongoose = require("mongoose")
+
 const url = process.env.MONGODB_URI
 
 console.log(`connecting to ${url}`)
@@ -15,12 +17,12 @@ const personSchema = new mongoose.Schema({
     number: String,
 })
 
-personSchema.set("toJson", {
+personSchema.set("toJSON", {
     transform: (document, returnedObjecct) => {
-        returnedObjecct.id == returnedObjecct.__id.toString()
-        delete returnedObjecct.__id
-        delete returnedObjecct.__v
+        returnedObjecct.id = returnedObjecct._id.toString()
+        delete returnedObjecct._id
+        delete returnedObjecct._v
     }
 })
 
-const Person = mongoose.model("Person", personSchema)
+module.exports = mongoose.model("Person", personSchema)
