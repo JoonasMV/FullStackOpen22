@@ -18,10 +18,10 @@ const personSchema = new mongoose.Schema({
 })
 
 personSchema.set("toJSON", {
-    transform: (document, returnedObjecct) => {
-        returnedObjecct.id = returnedObjecct._id.toString()
-        delete returnedObjecct._id
-        delete returnedObjecct._v
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
     }
 })
 
