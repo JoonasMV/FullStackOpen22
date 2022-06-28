@@ -9,7 +9,7 @@ import personService from "./services/personService";
 
 function App() {
   const [persons, setPersons] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState({message: null, error: false})
 
   useEffect(() => {
     personService
@@ -54,20 +54,21 @@ function App() {
         .then(returnedPerson => {
           setPersons(persons => persons.concat(returnedPerson))
         })
+        .catch(error => {
+          handleMessage({message: error.response.data.error, error: true})
+          console.log(error)
+        })
         setNewPerson({ name: "", number: "" })
     } else {
       // alerts if person is already in the phonebook
       if (window.confirm(`${dubplicatePerson.name} is already in the phonebook`)) {
-        console.log(dubplicatePerson.id)
         personService
           .changeNumber(dubplicatePerson.id, newPerson)
           .then(returnedPerson => {
             const updatedPersons = persons.map(person => 
               person.id !== returnedPerson.id ? person : returnedPerson)
           setPersons(updatedPersons)
-            
           })
-        console.log(persons)
       }
     }
   }
@@ -83,24 +84,25 @@ function App() {
         .then(() => {
           const deletedPersons = persons.filter(element => element.id !== person.id)
           setPersons(deletedPersons)
-          handleMessage(`${person.name} was removed`)
-          console.log(person.name)
+          handleMessage({message: `${person.name} was removed`, error: false})
+        })
+        .catch(error => {
+          handleMessage({message: error, error: true})
         })
     }
   }
 
-  const handleMessage = msg => {
-    console.log(msg)
-    setErrorMessage(msg)
+  const handleMessage = ({message, error}) => {
+    setNotification({message: message, error: error})
     setTimeout(() => {
-      setErrorMessage(null)
+      setNotification({message: null, error: false})
     }, 5000)
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={errorMessage}/>
+      <Notification notification={notification}/>
 
       <Filter handleFilter={handleFilter} />
 
