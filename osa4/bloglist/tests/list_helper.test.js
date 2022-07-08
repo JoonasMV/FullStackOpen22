@@ -1,10 +1,12 @@
 const listHelper = require("../utils/list_helper");
 
-test("dummy returns one", () => {
-  const blogs = [];
+describe("dummy test", () => {
+  test("dummy returns one", () => {
+    const blogs = [];
 
-  const result = listHelper.dummy(blogs);
-  expect(result).toBe(1);
+    const result = listHelper.dummy(blogs);
+    expect(result).toBe(1);
+  });
 });
 
 describe("total likes", () => {
@@ -17,7 +19,14 @@ describe("total likes", () => {
 describe("most liked", () => {
   test("Most liked blog", () => {
     const result = listHelper.favoriteBlog(blogs);
-    expect(result).toEqual(blogs[2]);
+    expect(result).toEqual(favBlog);
+  });
+});
+
+describe("most blogs", () => {
+  test("Author with most blogs", () => {
+    const result = listHelper.mostBlogs(blogs);
+    expect(result).toEqual(authorWithMostBlogs);
   });
 });
 
@@ -71,3 +80,15 @@ const blogs = [
     __v: 0,
   },
 ];
+
+const favBlog = {
+  title: "Canonical string reduction",
+  author: "Edsger W. Dijkstra",
+  likes: 12,
+};
+
+const authorWithMostBlogs = 
+  {
+    author: "Robert C. Martin",
+    blogs: 3
+  };
