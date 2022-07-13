@@ -1,3 +1,4 @@
+const { reduce } = require("lodash");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const { response } = require("../app");
@@ -45,6 +46,31 @@ const response = await api.get('/api/blogs')
 
   expect('id').toBeDefined();
 });
+
+test('new blogs can be added', async () => {
+  const newBlog = {
+    "title": "New Blog",
+    "author": "Mr.Example",
+    "url": "torilauta.onion",
+    "likes": 420
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  
+    const response = await api.get('/api/blogs')
+    const fields = response.body
+    fields.forEach(element => {
+      delete element.id
+    });
+
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(fields[initialBlogs.length]).toEqual(newBlog)
+
+})
 
 
 afterAll(() => {
