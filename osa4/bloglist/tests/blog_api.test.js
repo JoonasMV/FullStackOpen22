@@ -38,6 +38,14 @@ test("there are two JSON blogs", async () => {
   expect(response.body).toHaveLength(initialBlogs.length)
 });
 
+test('id field is id', async () => {
+const response = await api.get('/api/blogs')
+
+  console.log(response.body)
+
+  expect('id').toBeDefined();
+});
+
 
 afterAll(() => {
   mongoose.connection.close();
