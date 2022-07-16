@@ -83,6 +83,15 @@ test("likes atleast zero", async () => {
   expect(response.body[initialBlogs] === 0);
 });
 
+test("blog must have title and url", async () => {
+  const invalidBlog = {
+    author: "Hippy Hopson",
+    likes: 20,
+  };
+
+  await api.post("/api/blogs/").send(invalidBlog).expect(400);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
