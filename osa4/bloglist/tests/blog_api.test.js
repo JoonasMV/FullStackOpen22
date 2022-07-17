@@ -40,10 +40,6 @@ test("there are two JSON blogs", async () => {
 });
 
 test("id field is id", async () => {
-  const response = await api.get("/api/blogs");
-
-  console.log(response.body);
-
   expect("id").toBeDefined();
 });
 
@@ -80,7 +76,8 @@ test("likes atleast zero", async () => {
 
   await api.post("/api/blogs").send(testBlog).expect(201);
   const response = await api.get("/api/blogs");
-  expect(response.body[initialBlogs] === 0);
+  const lastItem = response.body.length - 1;
+  expect(response.body[lastItem].likes).toEqual(0);
 });
 
 test("blog must have title and url", async () => {
@@ -90,6 +87,16 @@ test("blog must have title and url", async () => {
   };
 
   await api.post("/api/blogs/").send(invalidBlog).expect(400);
+});
+
+test("delete single blog", async () => {
+  const response = await api.get("/api/blogs");
+  const idToDelete = await response.body[0].id;
+  await api.delete(`/api/blogs/${idToDelete}`);
+
+  const newBlogList = await api.get("/api/blogs");
+  const newLength = await newBlogList.body.length
+  expect(newLength).toEqual(initialBlogs.length - 1)
 });
 
 afterAll(() => {
