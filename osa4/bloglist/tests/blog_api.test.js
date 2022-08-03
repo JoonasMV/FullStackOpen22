@@ -1,4 +1,4 @@
-const { reduce } = require("lodash");
+const { reduce, update } = require("lodash");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const { response } = require("../app");
@@ -12,12 +12,14 @@ const initialBlogs = [
     author: "Bob Jones",
     url: "www.example.com",
     likes: 69,
+    id: "62d45068aaa19c7bd8c7fbdf",
   },
   {
     title: "Blogsy",
     author: "Michael Reeves",
     url: "www.humphumo.xyz",
     likes: 12,
+    id: "62e487c4fab610fe7eb57b05"
   },
 ];
 
@@ -98,6 +100,19 @@ test("delete single blog", async () => {
   const newLength = await newBlogList.body.length
   expect(newLength).toEqual(initialBlogs.length - 1)
 });
+
+test("change blog", async () => {
+  const response = await api.get("/api/blogs");
+  const idToUpdate = await response.body[0].id;
+  await api
+    .put(`/api/blogs/${idToUpdate}`)
+    .send({ likes: 123 })
+  
+  const newblogList = await api.get("/api/blogs")
+  const updatedBlog = newblogList.body[0]
+  expect(updatedBlog.likes).toBe(123)
+})
+
 
 afterAll(() => {
   mongoose.connection.close();

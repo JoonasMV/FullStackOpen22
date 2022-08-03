@@ -2,7 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "author": "Michael Reeves",
-    "url": "www.humphumo.xyz",
-    "likes": 12
+    "title": "Giraffe",
+    "author": "Alice",
+    "url": "www.loink.com",
+    "likes": 2
 }
