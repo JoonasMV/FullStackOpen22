@@ -1,10 +1,14 @@
 const { reduce, update } = require("lodash");
-const mongoose = require("mongoose");
 const supertest = require("supertest");
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const { response } = require("../app");
+const helper = require("./test_helper");
 const app = require("../app");
 const api = supertest(app);
+
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
@@ -19,7 +23,7 @@ const initialBlogs = [
     author: "Michael Reeves",
     url: "www.humphumo.xyz",
     likes: 12,
-    id: "62e487c4fab610fe7eb57b05"
+    id: "62e487c4fab610fe7eb57b05",
   },
 ];
 
@@ -97,22 +101,19 @@ test("delete single blog", async () => {
   await api.delete(`/api/blogs/${idToDelete}`);
 
   const newBlogList = await api.get("/api/blogs");
-  const newLength = await newBlogList.body.length
-  expect(newLength).toEqual(initialBlogs.length - 1)
+  const newLength = await newBlogList.body.length;
+  expect(newLength).toEqual(initialBlogs.length - 1);
 });
 
 test("change blog", async () => {
   const response = await api.get("/api/blogs");
   const idToUpdate = await response.body[0].id;
-  await api
-    .put(`/api/blogs/${idToUpdate}`)
-    .send({ likes: 123 })
-  
-  const newblogList = await api.get("/api/blogs")
-  const updatedBlog = newblogList.body[0]
-  expect(updatedBlog.likes).toBe(123)
-})
+  await api.put(`/api/blogs/${idToUpdate}`).send({ likes: 123 });
 
+  const newblogList = await api.get("/api/blogs");
+  const updatedBlog = newblogList.body[0];
+  expect(updatedBlog.likes).toBe(123);
+});
 
 afterAll(() => {
   mongoose.connection.close();
