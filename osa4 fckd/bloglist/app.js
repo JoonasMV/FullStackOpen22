@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 
 const blogRouter = require("./controllers/blog");
 const usersRouter = require("./controllers/users")
+const fillerRouter = require("./controllers/filler")
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 
@@ -27,6 +28,7 @@ app.use(middleware.requestLogger);
 
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", usersRouter)
+app.use("/test", fillerRouter)
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

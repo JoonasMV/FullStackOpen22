@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "vitu",
-    "author": "asd",
+    "title": "abc",
+    "author": "Bob Jones",
     "url": "www.adadada.com",
     "likes": 2
 }
