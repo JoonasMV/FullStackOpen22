@@ -29,12 +29,13 @@ describe("blog api tests", () => {
   });
 
   test("blogs can be added", async () => {
-    const newBlog = new Blog({
+    const newBlog = {
       title: "test",
       author: "penis :D",
       url: "www",
       likes: 420,
-    });
+    };
+    console.log(newBlog)
 
     await api
       .post("/api/blogs")
@@ -47,21 +48,44 @@ describe("blog api tests", () => {
   });
 
   test("likes default to zero", async () => {
-    const newBlog = new Blog({
-      title: "test",
+    const newBlog = {
       author: "bob",
-      url: "www",
-    });
+    };
 
-    await api.post("/api/blogs").send(newBlog);
+    await api
+      .post("/api/blogs")
+      .send(newBlog);
 
     const response = await api.get("/api/blogs");
     const blogs = response.body;
-    console.log(blogs[1]);
+    console.log(response.body);
     expect(blogs[blogs.length - 1].likes).toBe(0);
   });
 
-  
+  test("required fields present", async () => {
+    const noTitle = {
+      author: "bob",
+      url: "www",
+      likes: 3,
+    }
+
+    await api
+      .post("/api/blogs")
+      .send(noTitle)
+      .expect(400)
+
+    const noUrl = {
+      title: "test",
+      author: "bob",
+      likes: 3,
+    }
+
+    await api
+    .post("/api/blogs")
+    .send(noTitle)
+    .expect(400)
+  })
+
 });
 
 afterAll(() => {
