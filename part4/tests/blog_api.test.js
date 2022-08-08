@@ -49,7 +49,9 @@ describe("blog api tests", () => {
 
   test("likes default to zero", async () => {
     const newBlog = {
+      title: "test",
       author: "bob",
+      url: "vvv"
     };
 
     await api
@@ -82,8 +84,33 @@ describe("blog api tests", () => {
 
     await api
     .post("/api/blogs")
-    .send(noTitle)
+    .send(noUrl)
     .expect(400)
+  })
+
+  test("blog deletion works", async () => {
+    const response = await api.get("/api/blogs")
+    const delId = response.body[0].id
+    await api
+      .delete(`/api/blogs/${delId}`)
+      .expect(204)
+
+    const newResponse = await api.get("/api/blogs")
+    expect(newResponse.body.length).toBe(helper.initialBlogs.length - 1)
+  })
+
+  test("blog updation", async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToUpdate = blogs[0]
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({ likes: 123 })
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd[0]
+    expect(updatedBlog.likes).toBe(123)
   })
 
 });
