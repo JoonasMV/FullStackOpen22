@@ -4,7 +4,7 @@ const blogSchema = mongoose.Schema({
   title: String,
   author: String,
   url: String,
-  likes: Number,
+  likes: { type: Number, default: 0 }
 });
 
 blogSchema.set('toJSON', {
@@ -15,6 +15,4 @@ blogSchema.set('toJSON', {
   }
 })
 
-const blogModel = mongoose.model("Blog", blogSchema);
-
-module.exports = blogModel;
+module.exports = mongoose.model("Blog", blogSchema);

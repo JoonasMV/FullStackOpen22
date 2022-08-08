@@ -4,7 +4,7 @@ const helper = require("./test_helper");
 const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blogModel");
-const e = require("express");
+const { request } = require("../app");
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -23,7 +23,6 @@ describe("blog api tests", () => {
 
   test("id field is id", async () => {
     const blogs = await api.get("/api/blogs");
-    console.log(blogs.body);
     blogs.body.forEach((blog) => {
       expect(blog).toHaveProperty("id");
     });
@@ -45,6 +44,21 @@ describe("blog api tests", () => {
 
     const response = await api.get("/api/blogs");
     expect(response.body.length).toBe(helper.initialBlogs.length + 1);
+  });
+
+  test("likes default to zero", async () => {
+    const newBlog = new Blog({
+      title: "test",
+      author: "bob",
+      url: "www",
+    });
+
+    await api.post("/api/blogs").send(newBlog);
+
+    const response = await api.get("/api/blogs");
+    const blogs = response.body;
+    console.log(blogs[1]);
+    expect(blogs[blogs.length - 1].likes).toBe(0);
   });
 
   
