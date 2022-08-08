@@ -19,7 +19,18 @@ describe("blog api tests", () => {
 
     expect(blogs.body).toHaveLength(helper.initialBlogs.length);
   });
+
+  test("id field is id", async () => {
+    const blogs = await api.get("/api/blogs")
+    console.log(blogs.body)
+    blogs.body.forEach(blog => {
+      expect(blog).toHaveProperty("id")
+    });
+  })
+
+  
 });
+
 
 afterAll(() => {
   mongoose.connection.close();
