@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2MmYyMGY2NjZiNDdiZGExYTZjOGQxZjAiLCJpYXQiOjE2NjAwMzEzMTh9.UNRuPGfKPonju-QpZZ3Yrg3RTCPFnMve6x6AiozHyPs
 
 {
-    "title": "Hol up",
-    "author": "Bob James",
-    "url": "www.jumpy.com",
-    "likes": 1
+    "title": "Token test",
+    "author": "Token Toke",
+    "url": "www.pls.com",
+    "likes": 69
 }

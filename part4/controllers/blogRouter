@@ -1,7 +1,17 @@
 const blogRouter = require("express").Router();
 const logger = require("../utils/logger")
 const Blog = require("../models/blogModel");
-const User = require("../models/userModel")
+const User = require("../models/userModel");
+const jwt = require('jsonwebtoken');
+
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
 
 blogRouter.get("/", async (request, response) => {
   const blogs = await Blog
@@ -23,22 +33,25 @@ blogRouter.get("/:id", async (request, response) => {
 blogRouter.post("/", async (request, response) => {
   const body = request.body;
 
-  //Credit anancarv github
-  const users = await User.find({})
-  const randomUser = users[Math.floor(Math.random() * users.length)]
-  logger.info(users)
+  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+
 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user: randomUser._id,
+    user: user._id,
   });
 
   const savedBlog = await blog.save();
-  randomUser.blogs = randomUser.blogs.concat(savedBlog._id)
-  await randomUser.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
 });
 
 blogRouter.delete("/:id", async (request, response) => {
