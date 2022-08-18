@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhlbGxhIiwiaWQiOiI2MmYxNGE1YWFjMDY1ZDhhYTA1OTRhOWMiLCJpYXQiOjE2NjA2NTAzMzF9.08S6zxSLZNQTUe8mlK7xZLH7JvR75gCC33Bh65i-SlI
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImthbGxlIiwiaWQiOiI2MmZlMTcyYzNkM2FiMGM4ODRlZGY5ZTIiLCJpYXQiOjE2NjA4MTkyNTl9.w8kubG_uGRueHAG-q_YsHIkPbhFhdvNKIsFp8vLcFoY
 
 {
-    "title": "Hellalla paisto",
-    "author": "Hella",
-    "url": "www.noise.zyx",
-    "likes": 12
+    "title": "kuinka lentää",
+    "author": "Kake",
+    "url": "www.KallesLife.fly",
+    "likes": 45
 }
