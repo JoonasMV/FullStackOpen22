@@ -14,9 +14,6 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [url, setUrl] = useState("")
   const [message, setMessage] = useState(null)
   const [isError, setIsError] = useState(false)
 
@@ -56,26 +53,15 @@ const App = () => {
     }
   };
 
-  const addBlog = (event) => {
-    event.preventDefault();
-
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url
-    }
-
+  const addBlog = (newBlog) => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(newBlog)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setTitle("")
-        setAuthor("")
-        setUrl("")
       })
 
-    notificationHandler(`A new blog "${title}" by ${author} added`, false)
+    notificationHandler(`A new blog "${newBlog.title}" by ${newBlog.author} added`, false)
   }
 
   const notificationHandler = (message, isError) => {
@@ -88,13 +74,11 @@ const App = () => {
   }
 
 /* --- RENDERING --- */
-  
   if (user === null) {
     return (
       <div>
         <Notification message={message} isError={isError}/>
         {LoginForm({ handleLogin, username, setUsername, password, setPassword })}
-        {/* <Togglable buttonLabel="Login"></Togglable> */}
       </div>
     )
   }
@@ -106,12 +90,7 @@ const App = () => {
       <Bloglist blogs={blogs} username={user.name} />
 
       <Togglable buttonLabel="New Post" ref={blogFormRef}>
-        <BlogForm 
-        addBlog={addBlog}
-        title={title} setTitle={setTitle} 
-        author={author} setAuthor={setAuthor}
-        url={url} setUrl={setUrl}
-        />
+        <BlogForm createBlog={addBlog} />
       </Togglable>
 
     </div>
