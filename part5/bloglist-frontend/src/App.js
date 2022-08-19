@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import LoginForm from "./components/LoginForm";
 import Bloglist from "./components/Bloglist";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -19,7 +20,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
   const [isError, setIsError] = useState(false)
 
-
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -64,6 +65,7 @@ const App = () => {
       url: url
     }
 
+    blogFormRef.current.toggleVisibility()
     blogService
       .create(newBlog)
       .then(returnedBlog => {
@@ -92,6 +94,7 @@ const App = () => {
       <div>
         <Notification message={message} isError={isError}/>
         {LoginForm({ handleLogin, username, setUsername, password, setPassword })}
+        {/* <Togglable buttonLabel="Login"></Togglable> */}
       </div>
     )
   }
@@ -102,12 +105,15 @@ const App = () => {
       <Notification message={message} isError={isError}/>
       <Bloglist blogs={blogs} username={user.name} />
 
-      <BlogForm 
-      addBlog={addBlog}
-      title={title} setTitle={setTitle} 
-      author={author} setAuthor={setAuthor}
-      url={url} setUrl={setUrl}
-      />
+      <Togglable buttonLabel="New Post" ref={blogFormRef}>
+        <BlogForm 
+        addBlog={addBlog}
+        title={title} setTitle={setTitle} 
+        author={author} setAuthor={setAuthor}
+        url={url} setUrl={setUrl}
+        />
+      </Togglable>
+
     </div>
     )
   }
