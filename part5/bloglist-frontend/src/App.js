@@ -73,6 +73,18 @@ const App = () => {
     }, 5000)
   }
 
+  const updateLikes = async (id, updatedValues) => {
+    try {
+      const updatedBlog = await blogService.update(id, updatedValues);
+      const newBlogs = blogs.map((blog) =>
+        blog.id === id ? updatedBlog : blog
+      );
+      setBlogs(newBlogs);
+    } catch (exception) {
+      notificationHandler(`exception.response.data.error`, true);
+    }
+  };
+
 /* --- RENDERING --- */
   if (user === null) {
     return (
@@ -87,7 +99,7 @@ const App = () => {
   return (
     <div>
       <Notification message={message} isError={isError}/>
-      <Bloglist blogs={blogs} username={user.name} />
+      <Bloglist blogs={blogs} username={user.name} updateLikes={updateLikes} />
 
       <Togglable buttonLabel="New Post" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />

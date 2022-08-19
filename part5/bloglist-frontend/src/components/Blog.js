@@ -1,6 +1,7 @@
-import { useReducer, useState } from "react";
+import { useState } from "react";
+import LikeButton from "./LikeButton";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateLikes }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -10,20 +11,18 @@ const Blog = ({ blog }) => {
   }
 
   const [visible, setVisible] = useState([])
-
-  const showMin = {display: visible ? "none" : "" }
-  const showInfo = { display: visible ? "" : "none" }
+  const showAll = {display: visible ? "none" : "" }
 
   const toggleShown = () => {
     setVisible(!visible)    
   }
-  console.log(blog)
+  //console.log(blog)
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author}
-      <div style={showMin}>
+      <div style={showAll}>
         <div>{blog.url}</div>
-        <div>Likes: {blog.likes} <button>Like</button></div>
+        <div>Likes: {blog.likes} <LikeButton blog={blog} updateLikes={updateLikes} /></div>
         <div>{blog.user.name}</div>
       </div>
       <button onClick={toggleShown}>Show</button>
