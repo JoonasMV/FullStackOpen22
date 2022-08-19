@@ -1,9 +1,7 @@
-import Blog from './components/Blog'
-
-const Blog = ({blog}) => (
+const Blog = ({ blog }) => (
   <div>
     {blog.title} {blog.author}
-  </div>  
-)
+  </div>
+);
 
-export default Blog
+export default Blog;
