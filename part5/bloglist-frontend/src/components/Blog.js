@@ -22,10 +22,10 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
   };
   //console.log(blog)
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title} {blog.author}{" "}
-      <button onClick={toggleShown}>{buttonText}</button>
-      <div style={showAll}>
+      <button onClick={toggleShown} className="infoButton">{buttonText}</button>
+      <div style={showAll} className="extraInfo">
         <div>{blog.url}</div>
         <div>
           Likes: {blog.likes}{" "}
