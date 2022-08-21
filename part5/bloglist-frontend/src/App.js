@@ -19,9 +19,14 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    useEffect(() => {
+      blogService.getAll().then((blogs) => sortBlogs(blogs));
+    }, []);
+    
+    const sortBlogs = (toSort) => {
+      const SortedBlogs = toSort.sort((a, b) => b.likes - a.likes)
+      setBlogs(SortedBlogs)
+    }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -58,7 +63,7 @@ const App = () => {
     blogService
       .create(newBlog)
       .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+        sortBlogs(blogs.concat(returnedBlog))
       })
 
     notificationHandler(`A new blog "${newBlog.title}" by ${newBlog.author} added`, false)
@@ -79,11 +84,13 @@ const App = () => {
       const newBlogs = blogs.map((blog) =>
         blog.id === id ? updatedBlog : blog
       );
-      setBlogs(newBlogs);
+      sortBlogs(newBlogs);
     } catch (exception) {
       notificationHandler(`exception.response.data.error`, true);
     }
   };
+
+ 
 
 /* --- RENDERING --- */
   if (user === null) {
