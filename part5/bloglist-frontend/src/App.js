@@ -14,19 +14,19 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null)
-  const [isError, setIsError] = useState(false)
+  const [message, setMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
 
-  const blogFormRef = useRef()
+  const blogFormRef = useRef();
 
-    useEffect(() => {
-      blogService.getAll().then((blogs) => sortBlogs(blogs));
-    }, []);
-    
-    const sortBlogs = (toSort) => {
-      const SortedBlogs = toSort.sort((a, b) => b.likes - a.likes)
-      setBlogs(SortedBlogs)
-    }
+  useEffect(() => {
+    blogService.getAll().then((blogs) => sortBlogs(blogs));
+  }, []);
+
+  const sortBlogs = (toSort) => {
+    const SortedBlogs = toSort.sort((a, b) => b.likes - a.likes);
+    setBlogs(SortedBlogs);
+  };
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -39,7 +39,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    
+
     try {
       const user = await loginService.login({
         username,
@@ -53,31 +53,32 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      setIsError(true)
-      notificationHandler("wrong credentials", true)
+      setIsError(true);
+      notificationHandler("wrong credentials", true);
     }
   };
-  
-    const notificationHandler = (message, isError) => {
-      setMessage(message)
-      setIsError(isError)
-      setTimeout(() => {
-        setMessage(null)
-        setIsError(false)
-      }, 5000)
-    }
+
+  const notificationHandler = (message, isError) => {
+    setMessage(message);
+    setIsError(isError);
+    setTimeout(() => {
+      setMessage(null);
+      setIsError(false);
+    }, 5000);
+  };
 
   const addBlog = (newBlog) => {
-    blogFormRef.current.toggleVisibility()
-    blogService
-      .create(newBlog)
-      .then(returnedBlog => {
-        console.log(returnedBlog)
-        sortBlogs(blogs.concat(returnedBlog))
-      })
+    blogFormRef.current.toggleVisibility();
+    blogService.create(newBlog).then((returnedBlog) => {
+      console.log(returnedBlog);
+      sortBlogs(blogs.concat(returnedBlog));
+    });
 
-    notificationHandler(`A new blog "${newBlog.title}" by ${newBlog.author} added`, false)
-  }
+    notificationHandler(
+      `A new blog "${newBlog.title}" by ${newBlog.author} added`,
+      false
+    );
+  };
 
   const updateLikes = async (id, updatedValues) => {
     try {
@@ -93,38 +94,47 @@ const App = () => {
 
   const deleteBlog = async (blogId) => {
     try {
-      await blogService.remove(blogId)
-      const newBlogs = blogs.filter(blog => blog.id !== blogId)
-      sortBlogs(newBlogs)
-
+      await blogService.remove(blogId);
+      const newBlogs = blogs.filter((blog) => blog.id !== blogId);
+      sortBlogs(newBlogs);
     } catch (exception) {
-      console.log(exception.response.data.error)
+      console.log(exception.response.data.error);
       notificationHandler(exception.response.data.error, true);
     }
-  }
+  };
 
-/* --- RENDERING --- */
+  /* --- RENDERING --- */
   if (user === null) {
     return (
       <div>
-        <Notification message={message} isError={isError}/>
-        {LoginForm({ handleLogin, username, setUsername, password, setPassword })}
+        <Notification message={message} isError={isError} />
+        {LoginForm({
+          handleLogin,
+          username,
+          setUsername,
+          password,
+          setPassword,
+        })}
       </div>
-    )
+    );
   }
 
-/* --- LOGGED USER --- */
+  /* --- LOGGED USER --- */
   return (
     <div>
-      <Notification message={message} isError={isError}/>
-      <Bloglist blogs={blogs} username={user.name} updateLikes={updateLikes} deleteBlog={deleteBlog} />
+      <Notification message={message} isError={isError} />
+      <Bloglist
+        blogs={blogs}
+        username={user.name}
+        updateLikes={updateLikes}
+        deleteBlog={deleteBlog}
+      />
 
       <Togglable buttonLabel="New Post" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-
     </div>
-    )
-  }
+  );
+};
 
 export default App;
