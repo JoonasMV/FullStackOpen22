@@ -1,6 +1,6 @@
 const LikeButton = ({ blog, updateLikes }) => {
   const addLike = () => {
-    console.log(blog)
+    //console.log(blog)
     const updatedBlog = {
       title: blog.title,
       author: blog.author,

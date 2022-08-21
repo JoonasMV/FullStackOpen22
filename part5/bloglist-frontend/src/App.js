@@ -57,25 +57,26 @@ const App = () => {
       notificationHandler("wrong credentials", true)
     }
   };
+  
+    const notificationHandler = (message, isError) => {
+      setMessage(message)
+      setIsError(isError)
+      setTimeout(() => {
+        setMessage(null)
+        setIsError(false)
+      }, 5000)
+    }
 
   const addBlog = (newBlog) => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(newBlog)
       .then(returnedBlog => {
+        console.log(returnedBlog)
         sortBlogs(blogs.concat(returnedBlog))
       })
 
     notificationHandler(`A new blog "${newBlog.title}" by ${newBlog.author} added`, false)
-  }
-
-  const notificationHandler = (message, isError) => {
-    setMessage(message)
-    setIsError(isError)
-    setTimeout(() => {
-      setMessage(null)
-      setIsError(false)
-    }, 5000)
   }
 
   const updateLikes = async (id, updatedValues) => {
@@ -86,11 +87,21 @@ const App = () => {
       );
       sortBlogs(newBlogs);
     } catch (exception) {
-      notificationHandler(`exception.response.data.error`, true);
+      notificationHandler(exception.response.data.error, true);
     }
   };
 
- 
+  const deleteBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId)
+      const newBlogs = blogs.filter(blog => blog.id !== blogId)
+      sortBlogs(newBlogs)
+
+    } catch (exception) {
+      console.log(exception.response.data.error)
+      notificationHandler(exception.response.data.error, true);
+    }
+  }
 
 /* --- RENDERING --- */
   if (user === null) {
@@ -106,7 +117,7 @@ const App = () => {
   return (
     <div>
       <Notification message={message} isError={isError}/>
-      <Bloglist blogs={blogs} username={user.name} updateLikes={updateLikes} />
+      <Bloglist blogs={blogs} username={user.name} updateLikes={updateLikes} deleteBlog={deleteBlog} />
 
       <Togglable buttonLabel="New Post" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
