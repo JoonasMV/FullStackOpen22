@@ -1,6 +1,6 @@
 const LikeButton = ({ blog, updateLikes }) => {
   const addLike = () => {
-    console.log(blog)
+    //console.log(blog)
     const updatedBlog = {
       title: blog.title,
       author: blog.author,
@@ -9,10 +9,10 @@ const LikeButton = ({ blog, updateLikes }) => {
       user: blog.user.id,
     };
 
-    updateLikes(blog.id, updatedBlog)
+    updateLikes(blog.id, updatedBlog);
   };
 
-  return <button onClick={addLike}>Like</button>
+  return <button onClick={addLike}>Like</button>;
 };
 
 export default LikeButton;
