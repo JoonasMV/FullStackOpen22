@@ -29,12 +29,9 @@ const App = () => {
     e.preventDefault()
     const duplicate = persons.find((person) => person.name === newName)
     if (duplicate) {
-      if (
-        window.confirm(
-          `${newName} already added, replace the old number with a new one?`
-        )
-      )
+      if (window.confirm(`${newName} already added, replace the old number with a new one?`)) {
         updateContact(duplicate.id, { name: newName, number: newNumber })
+      }
       return
     }
 
@@ -52,7 +49,10 @@ const App = () => {
         setNewNumber("")
         handleNotification(`${newName} added to contacts`, false)
       })
-      .catch((err) => handleNotification(`Error adding ${newName}`, true))
+      .catch((err) => { 
+        //console.log(err.response.data.error)
+        handleNotification(err.response.data.error, true) 
+      })
   }
 
   const removeContact = (id, name) => {
@@ -82,7 +82,7 @@ const App = () => {
       })
       .catch((err) => {
         handleNotification(`${newContact.name} was already deleted`, true)
-        const newPersons = persons.filter(person => person.id !== id)
+        const newPersons = persons.filter((person) => person.id !== id)
         setPersons(newPersons)
         setFilteredPersons(newPersons)
       })
