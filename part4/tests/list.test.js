@@ -29,7 +29,26 @@ describe("favourite blog", () => {
 
 describe("most blogs", () => {
   test("multiple blogs", () => {
-    expect(listHelper.mostBlogs(blogs)).toEqual({ author: "Robert C. Martin", blogs: 3 })
+    expect(listHelper.mostBlogs(blogs)).toEqual({
+      author: "Robert C. Martin",
+      blogs: 3,
+    })
+  })
+
+  test("one blog", () => {
+    expect(listHelper.mostBlogs(blogs.slice(0, 1))).toEqual({
+      author: "Michael Chan",
+      blogs: 1,
+    })
+  })
+})
+
+describe("most likes", () => {
+  test("multiple blogs", () => {
+    expect(listHelper.mostLikes(blogs)).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 12,
+    })
   })
 })
 
