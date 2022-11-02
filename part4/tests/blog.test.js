@@ -75,3 +75,30 @@ describe("posting new blog", () => {
     await api.post("/api/blogs").send(invBlog).expect(400)
   })
 })
+
+describe("blog deletion", () => {
+  test("deletion works", async () => {
+    const blogs = await api.get("/api/blogs")
+    const idToDelete = blogs.body[0].id
+    await api.delete(`/api/blogs/${idToDelete}`).expect(204)
+  })
+
+  test("blog amount decreases", async () => {
+    const blogs = await api.get("/api/blogs")
+    await api.delete(`/api/blogs/${blogs.body[0].id}`)
+    const blogsAtEnd = await api.get("/api/blogs")
+    expect(blogsAtEnd.body.length).toBe(helper.initialBlogs.length - 1)
+  })
+})
+
+describe("blog updation", () => {
+  test("values update", async () => {
+    const blogs = await api.get("/api/blogs")
+    const blogId = blogs.body[0].id
+
+    await api.put(`/api/blogs/${blogId}`).send({ likes: 123 })
+    const updatedBlogs = await api.get("/api/blogs")
+    expect(updatedBlogs.body[0].likes).toBe(123)
+  })
+
+})

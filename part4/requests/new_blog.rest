@@ -2,8 +2,33 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "asd",
+  "title": "adadad",
   "author": "asd",
   "url": "www.testi.com",
   "likes": 123
 }
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "adadad",
+  "author": "asd",
+  "url": "www.testi.com",
+  "likes": 123
+}
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "adadad",
+  "author": "asd",
+  "url": "www.testi.com",
+  "likes": 123
+}
+###
+
+DELETE http://localhost:3003/api/blogs
