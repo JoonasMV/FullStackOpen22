@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkphbWVzIiwiaWQiOiI2MzYyM2M2ZDcwNmVkYjcxMzQ0Zjg0OGIiLCJpYXQiOjE2Njc0NTQ0OTF9.0qKvoiR7DaEsNWiM7B_Qt5t20I1zdRpm-LvGXKCTGDs
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhhaXN1bGkiLCJpZCI6IjYzNjM2ZTdlMGI1MWZhMGEwZjNhNDQyYiIsImlhdCI6MTY2NzQ2MjExNX0.3inlTseIrRlDUHX4Mmp26G0sMj_Og5X23on3I4kJdr8
 
 {
   "title": "adadad",

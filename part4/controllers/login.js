@@ -4,6 +4,7 @@ const loginRouter = require("express").Router()
 const User = require("./../models/userModel")
 
 loginRouter.post("/", async (req, res) => {
+  console.log(req.body)
   const { username, password } = req.body
 
   const user = await User.findOne({ username: username })

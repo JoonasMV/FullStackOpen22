@@ -1,6 +1,7 @@
 const blogRouter = require("express").Router()
 const jwt = require("jsonwebtoken")
 const { default: mongoose } = require("mongoose")
+const { rawListeners } = require("../app")
 const Blog = require("../models/blogModel")
 const User = require("../models/userModel")
 
@@ -10,19 +11,9 @@ blogRouter.get("/", (req, res) => {
   })
 })
 
-const getTokenFrom = (req) => {
-  const authorization = req.get("authorization")
-  console.log(req.get("authorization"))
-  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 blogRouter.post("/", async (req, res, next) => {
-  const token = getTokenFrom(req)
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
+  const decodedToken = jwt.verify(req.token, process.env.SECRET)
+  if (!req.token || !decodedToken.id) {
     return res.status(401).json({ error: "token missing or invalid" })
   }
 
@@ -38,12 +29,19 @@ blogRouter.post("/", async (req, res, next) => {
 })
 
 blogRouter.delete("/:id", async (req, res) => {
-  try {
-    await Blog.findByIdAndRemove(req.params.id)
-    res.sendStatus(204)
-  } catch {
-    res.status(500).json({ error: "error deleting blog" })
+  const blog = await Blog.findById(req.params.id)
+  if (!req.user) return res.sendStatus(401)
+
+  if (blog.user.toString() === req.user.id) {
+    const deletedBlog = await Blog.findByIdAndRemove(req.params.id)
+    let filterblog = req.user.blogs
+    console.log(filterblog)
+    let newblogs = filterblog.filter(blog => blog.toString() !== deletedBlog._id.toString())
+    console.log(newblogs)
+    return res.sendStatus(204)
   }
+
+  res.sendStatus(401)
 })
 
 blogRouter.delete("/", async (req, res) => {
