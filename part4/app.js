@@ -5,6 +5,7 @@ require("express-async-errors")
 const cors = require("cors")
 const blogRouter = require("./controllers/blogRouter")
 const userRouter = require("./controllers/userRouter")
+const loginRouter = require("./controllers/login")
 const app = express()
 const mongoose = require("mongoose")
 
@@ -17,6 +18,7 @@ app.use(cors())
 
 app.use("/api/blogs", blogRouter)
 app.use("/api/users", userRouter)
+app.use("/api/login", loginRouter)
 
 app.use(errorHandler)
 

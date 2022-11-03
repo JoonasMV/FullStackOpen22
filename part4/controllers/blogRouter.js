@@ -1,4 +1,5 @@
 const blogRouter = require("express").Router()
+const jwt = require("jsonwebtoken")
 const { default: mongoose } = require("mongoose")
 const Blog = require("../models/blogModel")
 const User = require("../models/userModel")
@@ -9,9 +10,24 @@ blogRouter.get("/", (req, res) => {
   })
 })
 
+const getTokenFrom = (req) => {
+  const authorization = req.get("authorization")
+  console.log(req.get("authorization"))
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.substring(7)
+  }
+  return null
+}
+
 blogRouter.post("/", async (req, res, next) => {
+  const token = getTokenFrom(req)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!token || !decodedToken.id) {
+    return res.status(401).json({ error: "token missing or invalid" })
+  }
+
+  const user = await User.findById(decodedToken.id)
   const newBlog = new Blog(req.body)
-  const user = await User.findOne({})
   newBlog.user = user
 
   const savedBlog = await newBlog.save()
