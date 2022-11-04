@@ -3,6 +3,7 @@ const supertest = require("supertest")
 const app = require("../app")
 const api = supertest(app)
 const Blog = require("../models/blogModel")
+const User = require("../models/userModel")
 const helper = require("./test_helper")
 
 beforeEach(async () => {
@@ -35,19 +36,38 @@ describe("posting new blog", () => {
     url: "swim.co.uk",
     likes: 7,
   }
+
+  let token = null
+  beforeAll(async () => {
+    await User.deleteMany({})
+    for (const user of helper.initialUsers) {
+      await api.post("/api/users").send(user)
+    }
+
+    const reqForToken = await api
+      .post("/api/login")
+      .send(helper.initialUsers[0])
+    token = reqForToken.body.token
+  })
+
   test("blog can be added", async () => {
-    await api.post("/api/blogs")
+    await api
+      .post("/api/blogs")
+      .set("Authorization", `bearer ${token}`)
       .send(newBlog)
       .expect("Content-Type", /json/)
       .expect(201)
-      .then(res => {
+      .then((res) => {
         newBlog.id = res.body.id
-        expect(res.body).toStrictEqual(newBlog)
+        expect(res.body.title).toContain("Swimming")
       })
   })
 
   test("db size increases", async () => {
-    await api.post("/api/blogs").send(newBlog)
+    await api
+      .post("/api/blogs")
+      .set("Authorization", `bearer ${token}`)
+      .send(newBlog)
     const result = await api.get("/api/blogs")
     expect(result.body.length).toBe(helper.initialBlogs.length + 1)
   })
@@ -59,9 +79,11 @@ describe("posting new blog", () => {
       url: "ice.cool",
     }
 
-    await api.post("/api/blogs")
+    await api
+      .post("/api/blogs")
+      .set("Authorization", `bearer ${token}`)
       .send(noLikes)
-      .then(res => {
+      .then((res) => {
         expect(res.body.likes).toBeDefined()
         expect(res.body.likes).toBe(0)
       })
@@ -69,10 +91,18 @@ describe("posting new blog", () => {
 
   test("title and url required", async () => {
     const invBlog = {
-      likes: 0
+      likes: 0,
     }
 
-    await api.post("/api/blogs").send(invBlog).expect(400)
+    await api
+      .post("/api/blogs")
+      .set("Authorization", `bearer ${token}`)
+      .send(invBlog)
+      .expect(400)
+  })
+
+  test("blogs can't be added without token", async () => {
+    await api.post("/api/blogs").send(newBlog).expect(401)
   })
 })
 
@@ -100,5 +130,4 @@ describe("blog updation", () => {
     const updatedBlogs = await api.get("/api/blogs")
     expect(updatedBlogs.body[0].likes).toBe(123)
   })
-
 })
