@@ -10,8 +10,8 @@ userRouter.get("/", async (req, res) => {
 userRouter.post("/", async (req, res) => {
   const body = req.body
 
-  const duplicateUser = await User.find({ username: body.username })
-  if (!duplicateUser) {
+  const duplicateUser = await User.findOne({ username: body.username })
+  if (duplicateUser) {
     res.status(400).json({ error: "username already in use" })
     return
   }
