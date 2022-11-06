@@ -3,9 +3,9 @@ const baseUrl = "/api/blogs"
 
 let token = null
 let config = null
-const setToken = newToken => {
+const setToken = (newToken) => {
   token = `bearer ${newToken}`
-  config = { headers: { Authorization: token }}
+  config = { headers: { Authorization: token } }
 }
 
 const getAll = () => {

@@ -64,7 +64,7 @@ const App = () => {
         ? handleNotification("Blog successfully deleted", false)
         : handleNotification("Unauthorized", true)
 
-      setBlogs(blogs.filter(blog => blog.id !== id))
+      setBlogs(blogs.filter((blog) => blog.id !== id))
     } catch (ex) {
       handleNotification("Error deleting blog", true)
     }
@@ -119,17 +119,17 @@ const App = () => {
         <br />
 
         {blogs.map((blog) => (
-          <Blog 
-            key={blog.id} 
-            blog={blog} 
-            sendLike={updateBlog} 
+          <Blog
+            key={blog.id}
+            blog={blog}
+            sendLike={updateBlog}
             user={user}
-            deleteBlog={deleteBlog} 
+            deleteBlog={deleteBlog}
           />
         ))}
 
         <h2>create new</h2>
-        <Togglable label={"new blog"} ref={blogFormRef}>
+        <Togglable buttonLabel={"new blog"} ref={blogFormRef}>
           <BlogForm createBlog={handleNewBlog} />
         </Togglable>
       </div>
