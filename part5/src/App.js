@@ -16,12 +16,15 @@ const App = () => {
   })
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    blogService
+      .getAll()
+      .then((blogs) => blogs.sort((a, b) => b.likes - a.likes))
+      .then((sortedBlogs) => setBlogs(sortedBlogs))
   }, [])
 
   useEffect(() => {
     const userInStorage = window.localStorage.getItem("user")
-    const user =JSON.parse(userInStorage)
+    const user = JSON.parse(userInStorage)
     userInStorage ? setUser(user) : setUser(null)
     blogService.setToken(user.token)
   }, [])
@@ -54,10 +57,28 @@ const App = () => {
     }
   }
 
-  const updatedBlog = async (blogUpdates) => {
+  const deleteBlog = async (id) => {
     try {
-      const updatedBlog = await blogService.updatedBlog(blogUpdates, blogUpdates.id)
-      setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog))
+      const status = await blogService.deleteBlog(id)
+      status === 204
+        ? handleNotification("Blog successfully deleted", false)
+        : handleNotification("Unauthorized", true)
+
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    } catch (ex) {
+      handleNotification("Error deleting blog", true)
+    }
+  }
+
+  const updateBlog = async (blogUpdates) => {
+    try {
+      const updatedBlog = await blogService.updatedBlog(
+        blogUpdates,
+        blogUpdates.id
+      )
+      setBlogs(
+        blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+      )
     } catch (err) {
       console.log(err)
       handleNotification("Error liking blog", true)
@@ -98,14 +119,19 @@ const App = () => {
         <br />
 
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} sendLike={updatedBlog} />
+          <Blog 
+            key={blog.id} 
+            blog={blog} 
+            sendLike={updateBlog} 
+            user={user}
+            deleteBlog={deleteBlog} 
+          />
         ))}
 
         <h2>create new</h2>
         <Togglable label={"new blog"} ref={blogFormRef}>
           <BlogForm createBlog={handleNewBlog} />
         </Togglable>
-      
       </div>
     )
   }
