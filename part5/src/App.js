@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import Blog from "./components/Blog"
-import BlogForm from "./components/blogForm"
+import BlogForm from "./components/BlogForm"
 import LoginForm from "./components/LoginForm"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
@@ -24,9 +24,13 @@ const App = () => {
 
   useEffect(() => {
     const userInStorage = window.localStorage.getItem("user")
-    const user = JSON.parse(userInStorage)
-    userInStorage ? setUser(user) : setUser(null)
-    blogService.setToken(user.token)
+    if (userInStorage) {
+      const user = JSON.parse(userInStorage)
+      setUser(user)
+      blogService.setToken(user.token)
+    } else {
+      setUser(null)
+    }
   }, [])
 
   const handleLogin = async (username, password) => {
@@ -129,7 +133,7 @@ const App = () => {
         ))}
 
         <h2>create new</h2>
-        <Togglable buttonLabel={"new blog"} ref={blogFormRef}>
+        <Togglable buttonLabel={"new blog"} ref={blogFormRef} >
           <BlogForm createBlog={handleNewBlog} />
         </Togglable>
       </div>

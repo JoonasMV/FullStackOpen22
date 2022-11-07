@@ -33,7 +33,7 @@ const Blog = ({ blog, sendLike, user, deleteBlog }) => {
   }
 
   return (
-    <div>
+    <div className="blog" >
       <div style={blogStyle}>
         <div>
           <span style={linkStyle} onClick={() => setDetails(!details)}>
