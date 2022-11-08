@@ -8,8 +8,7 @@ const notificationSlice = createSlice({
       return `you voted ${action.payload.content}`
     },
     closeNotification(state, action) {
-      state = null
-      return state
+      return null
     }
   },
 })
