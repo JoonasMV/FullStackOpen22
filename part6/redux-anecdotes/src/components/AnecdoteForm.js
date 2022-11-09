@@ -1,12 +1,13 @@
+import { connect } from "react-redux"
 import { useDispatch } from "react-redux"
 import { newAnecdote } from "../reducers/anecdoteSlice"
 
-const AnecdoteForm = () => {
+const AnecdoteForm = (props) => {
   const dispatch = useDispatch()
 
   const addAnecdote = (e) => {
     e.preventDefault()
-    dispatch(newAnecdote(e.target.anecdote.value))
+    props.newAnecdote(e.target.anecdote.value)
     e.target.anecdote.value = ""
   }
 
@@ -23,4 +24,9 @@ const AnecdoteForm = () => {
   )
 }
 
-export default AnecdoteForm
+const mapDispatchToProps = {
+  newAnecdote
+}
+
+const ConnectedAnecdoteForm = connect(null, mapDispatchToProps)(AnecdoteForm)
+export default ConnectedAnecdoteForm
