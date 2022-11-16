@@ -1,66 +1,31 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import Blog from "./components/Blog"
 import BlogForm from "./components/BlogForm"
 import LoginForm from "./components/LoginForm"
 import Notification from "./components/Notification"
 import Togglable from "./components/Togglable"
-import blogService from "./services/blogs"
-import loginService from "./services/login"
-import { reduxNotification } from "./slices/notificationSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { initBlogs } from "./slices/blogSlice"
+import { handleLogout } from "./slices/userSlice"
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
   
   useEffect(() => {
     dispatch(initBlogs())
   }, [])
   const reduxBlogs = useSelector(state => state.blogs)
   const sortedBlogs = [...reduxBlogs].sort((a, b) => b.likes - a.likes)
-
-  useEffect(() => {
-    const userInStorage = window.localStorage.getItem("user")
-    if (userInStorage) {
-      const user = JSON.parse(userInStorage)
-      setUser(user)
-      blogService.setToken(user.token)
-    } else {
-      setUser(null)
-    }
-  }, [])
-
-  const handleLogin = async (username, password) => {
-    try {
-      const user = await loginService.login({
-        username: username,
-        password: password,
-      })
-      setUser(user)
-      dispatch(reduxNotification(`Logged in as ${username}`, false))
-      blogService.setToken(user.token)
-      window.localStorage.setItem("user", JSON.stringify(user))
-    } catch (err) {
-      console.log("log in error")
-      dispatch(reduxNotification(err.response.data.error, true))
-    }
-  }
-
-  const handleLogout = () => {
-    setUser(null)
-    blogService.setToken(null)
-    window.localStorage.clear()
-  }
+  
+  const user = useSelector(state => state.login)
 
   const blogFormRef = useRef()
 
-  if (user === null) {
+  if (user.token === null) {
     return (
       <div>
         <Notification />
-        <LoginForm handleLogin={handleLogin} />
+        <LoginForm />
       </div>
     )
   } else {
@@ -70,7 +35,7 @@ const App = () => {
         <h1>Blogs</h1>
         <div>
           <strong>Logged in as {user.username}</strong>
-          <button onClick={handleLogout}>Log out</button>
+          <button onClick={() => dispatch(handleLogout())}>Log out</button>
         </div>
         <br />
 
