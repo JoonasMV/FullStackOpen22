@@ -5,8 +5,7 @@ const notificationSlice = createSlice({
   initialState: { message: null, id: null },
   reducers: {
     openNotification(state, action) {
-      const newasd = { ...state, message: action.payload }
-      return newasd
+      return { ...state, message: action.payload }
     },
     closeNotification() {
       return { message: null, id: null }
