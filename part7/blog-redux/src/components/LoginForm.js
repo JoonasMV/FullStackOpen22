@@ -1,27 +1,27 @@
-import { handleLogin } from "../slices/userSlice"
+import { handleLogin } from "../slices/loginSlice"
 import { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
-import { setUser } from "../slices/userSlice"
+import { setLoggedInUser } from "../slices/loginSlice"
 
 const LoginForm = () => {
   const dispatch = useDispatch()
-  const [username, setUsername] = useState("")
+  const [username, setLoggedInUsername] = useState("")
   const [password, setPassword] = useState("")
 
   useEffect(() => {
     const userInStorage = window.localStorage.getItem("user")
     if (userInStorage) {
       const user = JSON.parse(userInStorage)
-      dispatch(setUser(user))
+      dispatch(setLoggedInUser(user))
     } else {
-      dispatch(setUser(null))
+      dispatch(setLoggedInUser(null))
     }
   }, [])
 
   const handleSubmit = (event) => {
     event.preventDefault()
     dispatch(handleLogin(username, password))
-    setUsername("")
+    setLoggedInUsername("")
     setPassword("")
   }
 
@@ -32,7 +32,7 @@ const LoginForm = () => {
         <input
           type="text"
           value={username}
-          onChange={({ target }) => setUsername(target.value)}
+          onChange={({ target }) => setLoggedInUsername(target.value)}
           id="loginField"
         />
       </div>
