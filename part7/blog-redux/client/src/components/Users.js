@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
-import userSlice, { initUsers } from "../slices/userSlice"
+import { initUsers } from "../slices/userSlice"
 import { Link } from "react-router-dom"
-import LogOut from "./LogOut"
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -14,20 +13,21 @@ const Users = () => {
 
   return (
     <>
-      <h1>Users</h1>
-      <LogOut />
-      <br />
-
+      <h2>Users</h2>
       <table>
         <tbody>
           <tr>
             <td></td>
-            <td><b>Blogs created</b></td>
+            <td>
+              <b>Blogs created</b>
+            </td>
           </tr>
           {users.map((user) => (
-          <tr key={user.username}>
-            <td>{user.username}</td>
-            <td>{user.blogs.length}</td>
+            <tr key={user.username}>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.username}</Link>
+              </td>
+              <td>{user.blogs.length}</td>
             </tr>
           ))}
         </tbody>

@@ -1,12 +1,9 @@
 import { useEffect, useRef } from "react"
-import Blog from "./Blog"
+import Bloglist from "./Bloglist"
 import BlogForm from "./BlogForm"
-import Notification from "./Notification"
 import Togglable from "./Togglable"
-import LogOut from "./LogOut"
 import { useDispatch, useSelector } from "react-redux"
 import { initBlogs } from "../slices/blogSlice"
-import { handleLogout } from "../slices/loginSlice"
 
 const Homepage = () => {
   const dispatch = useDispatch()
@@ -23,17 +20,7 @@ const Homepage = () => {
 
   return (
     <div>
-      <Notification />
-      <h1>Blogs</h1>
-      <LogOut />
-
-      {sortedBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-        />
-      ))}
+        <Bloglist/>
 
       <h2>create new</h2>
       <Togglable buttonLabel={"new blog"} ref={blogFormRef} >
