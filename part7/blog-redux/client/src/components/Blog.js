@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from "react-redux"
 import { updateBlog } from "../slices/blogSlice"
 import { useParams } from "react-router-dom"
+import Togglable from "./Togglable"
+import CommentForm from "./CommentForm"
+import { useRef } from "react"
 
 const Blog = () => {
+  const commentFormRef = useRef()
   const dispatch = useDispatch()
 
   const id = useParams().id
@@ -28,6 +32,15 @@ const Blog = () => {
         {blog.likes} likes <button onClick={handleLike}>like</button>
       </div>
       <div>added by {blog.user.name}</div>
+      <h3>comments</h3>
+      <Togglable buttonLabel="add comment" ref={commentFormRef} >
+        <CommentForm toggleRef={commentFormRef}/>
+      </Togglable>
+      <ul>
+        {blog.comments 
+          ? (blog.comments.map((comment, index) => <li key={index}>{comment}</li>)) 
+          : (<li><strong>No comments yet</strong></li>)}
+      </ul>
     </>
   )
 }

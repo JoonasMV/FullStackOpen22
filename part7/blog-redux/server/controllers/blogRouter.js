@@ -41,8 +41,6 @@ blogRouter.delete("/:id", async (req, res) => {
 
 blogRouter.put("/:id", async (req, res) => {
   if (!req.user) return res.sendStatus(401)
-  //const blogToUpdate = await Blog.findById(req.params.id)
-  //if (!(req.user.id === blogToUpdate.user.toString())) return res.sendStatus(401)
 
   const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -50,6 +48,23 @@ blogRouter.put("/:id", async (req, res) => {
   }).populate("user", ["username", "name"])
 
   res.status(200).json(updatedBlog)
+})
+
+blogRouter.post("/:id", async (req, res) => {
+  const comment = req.body.comment
+  const blog = await Blog.findById(req.params.id)
+  console.log(comment)
+
+  blog.comments.push(comment)
+
+  const validationError = blog.validateSync()
+  console.log(validationError)
+  if (validationError)
+    return res.sendStatus(400)
+
+  blog.save()
+  res.status(201).json(blog)
+
 })
 
 module.exports = blogRouter

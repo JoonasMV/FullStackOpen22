@@ -11,16 +11,20 @@ const blogSlice = createSlice({
     },
     removeBlog(state, action) {
       const id = action.payload
-      return state.filter(blog => blog.id !== id)
+      return state.filter((blog) => blog.id !== id)
     },
     setBlogs(state, action) {
       return action.payload
     },
+    updateComments(state, action) {
+      const updatedComments = action.payload
+      return state.map(blog => blog.id === updatedComments.id ? updatedComments : blog)
+    }
   },
 })
 
 export default blogSlice.reducer
-export const { appendBlog, setBlogs, removeBlog } = blogSlice.actions
+export const { appendBlog, setBlogs, removeBlog, updateComments } = blogSlice.actions
 
 export const initBlogs = () => {
   return async (dispatch) => {
@@ -50,7 +54,7 @@ export const deleteBlog = (id) => {
         dispatch(reduxNotification("Unauthorized", true))
         return
       }
-      
+
       dispatch(reduxNotification("Blog successfully deleted", false))
       dispatch(removeBlog(id))
     } catch (error) {
@@ -66,6 +70,27 @@ export const updateBlog = (blogUpdates) => {
       blogUpdates.id
     )
     const updatedBlogs = getState().blogs
-    dispatch(setBlogs(updatedBlogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog)))
+    dispatch(
+      setBlogs(
+        updatedBlogs.map((blog) =>
+          blog.id === updatedBlog.id ? updatedBlog : blog
+        )
+      )
+    )
+  }
+}
+
+export const postComment = (id, comment) => {
+  return async (dispatch, getState) => {
+    try {
+      const commendtedBlog = await blogService.commentBlog(id, comment)
+      dispatch(reduxNotification("Comment posted", false))
+      dispatch(updateComments(commendtedBlog))
+      return
+    } catch (error) {
+      console.log(error)
+      dispatch(reduxNotification("Error posting comment", true))
+      return
+    }
   }
 }
