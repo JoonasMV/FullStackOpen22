@@ -13,6 +13,22 @@ import { Routes, Route } from "react-router-dom"
 import { useEffect, useRef } from "react"
 import { initBlogs } from "./slices/blogSlice"
 import { initUsers } from "./slices/userSlice"
+import styled, { createGlobalStyle } from "styled-components"
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: #FFFBC1;
+    font-family: consolas;
+  }
+`
+
+const Container = styled.div`
+  padding: 1% 25%;
+`
+const StyledTitle = styled.h1`
+  font-family: consolas;
+  font-style: oblique;
+`
 
 const App = () => {
   const blogFormRef = useRef();
@@ -34,12 +50,13 @@ const App = () => {
   }
 
   return (
-    <>
+    <Container>
+      <GlobalStyle />
       <Navbar />
       <Notification />
-      <h1>Blog app</h1>
+      <StyledTitle>Blog app</StyledTitle>
       <Togglable buttonLabel={"create new"} ref={blogFormRef}>
-        <Blogform toggleRef={blogFormRef}/>
+        <Blogform toggleRef={blogFormRef} />
       </Togglable>
 
       <Routes>
@@ -48,7 +65,7 @@ const App = () => {
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
       </Routes>
-    </>
+    </Container>
   )
 }
 

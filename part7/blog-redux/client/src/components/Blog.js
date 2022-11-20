@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom"
 import Togglable from "./Togglable"
 import CommentForm from "./CommentForm"
 import { useRef } from "react"
+import StyledButton from "../styled/StyledButton"
 
 const Blog = () => {
   const commentFormRef = useRef()
@@ -29,16 +30,16 @@ const Blog = () => {
       <h2>{blog.title}</h2>
       <a href={blog.url}>{blog.url}</a>
       <div>
-        {blog.likes} likes <button onClick={handleLike}>like</button>
+        {blog.likes} likes <StyledButton buttonSize={"15px"} onClick={handleLike}>like</StyledButton>
       </div>
       <div>added by {blog.user.name}</div>
       <h3>comments</h3>
       <Togglable buttonLabel="add comment" ref={commentFormRef} >
         <CommentForm toggleRef={commentFormRef}/>
       </Togglable>
-      <ul>
+      <ul style={{listStyleType: "none"}}>
         {blog.comments 
-          ? (blog.comments.map((comment, index) => <li key={index}>{comment}</li>)) 
+          ? (blog.comments.map((comment, index) => <li  key={index}>{comment}</li>)) 
           : (<li><strong>No comments yet</strong></li>)}
       </ul>
     </>

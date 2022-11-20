@@ -1,6 +1,14 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { createBlog } from "../slices/blogSlice"
+import { textStyling } from "../styled/styles"
+import styled from "styled-components"
+import StyledButton from "../styled/StyledButton"
+
+const StyledInput = styled.input`
+  ${textStyling}
+  font-size: 15px;
+`
 
 const BlogForm = ({ toggleRef }) => {
   const dispatch = useDispatch()
@@ -22,10 +30,10 @@ const BlogForm = ({ toggleRef }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{marginBottom: "10px"}}>
       <div>
         title:
-        <input
+        <StyledInput
           type="text"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
@@ -35,7 +43,7 @@ const BlogForm = ({ toggleRef }) => {
       </div>
       <div>
         author:
-        <input
+        <StyledInput
           type="text"
           value={author}
           onChange={({ target }) => setAuthor(target.value)}
@@ -45,7 +53,7 @@ const BlogForm = ({ toggleRef }) => {
       </div>
       <div>
         url:
-        <input
+        <StyledInput
           type="text"
           value={url}
           onChange={({ target }) => setUrl(target.value)}
@@ -53,7 +61,7 @@ const BlogForm = ({ toggleRef }) => {
           id="urlField"
         />
       </div>
-      <button type="submit">create</button>
+      <StyledButton buttonSize={"15px"} type="submit">create</StyledButton>
     </form>
   )
 }
