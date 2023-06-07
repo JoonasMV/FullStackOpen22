@@ -8,18 +8,18 @@ interface TrainingResult {
   average: number;
 }
 
-const calculateExercises = (actual: number[]): TrainingResult => {
-  const periodLength = actual.length;
+const calculateExercises = (args: trainingArguments): TrainingResult => {
+  const periodLength = args.actual.length;
   const targetDailyExercise = 2;
 
   let success: boolean = true;
   let rating: number = 1;
 
-  const trainingDays = actual.filter((day) => day > 0).length;
+  const trainingDays = args.actual.filter((day) => day > 0).length;
   if (trainingDays < periodLength * 0.75) success = false;
   else rating++;
 
-  const actualExerciseHours: number = actual.reduce((a, b) => a + b, 0);
+  const actualExerciseHours: number = args.actual.reduce((a, b) => a + b, 0);
   if (actualExerciseHours < periodLength * targetDailyExercise) success = false;
   else rating++;
 
@@ -37,7 +37,7 @@ const calculateExercises = (actual: number[]): TrainingResult => {
   }
 
   return {
-    periodLength: actual.length,
+    periodLength: args.actual.length,
     trainingDays,
     success,
     rating,
@@ -47,15 +47,30 @@ const calculateExercises = (actual: number[]): TrainingResult => {
   };
 };
 
-const parseArguments = (args: string[]): number[] => {
+interface trainingArguments {
+  target: number,
+  actual: number[]
+}
+
+const parseArguments = (args: string[]): trainingArguments => {
   if (args.length < 3) throw new Error("Not enough arguments");
 
-  const parseArguments = args.slice(3).map((hour) => Number(hour));
-  parseArguments.forEach((element) => {
+  
+  const actualHours = args.slice(3).map((hour) => Number(hour));
+  actualHours.forEach((element) => {
     if (Number.isNaN(element)) throw new Error("Invalid input");
   });
   
-  return parseArguments;
+  try {
+    const targetHours = Number(args[3]);
+
+    return {
+      target: targetHours,
+      actual: actualHours
+    };
+  } catch (error) {
+    throw new Error("Invalid input")
+  }
 };
 
 try {
