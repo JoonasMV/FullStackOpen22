@@ -38,9 +38,11 @@ app.post("/exercises", (req, res) => {
   }
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const parsedArguments = parseArguments(target, daily_exercises);
     res.send(calculateExercises(parsedArguments));
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     res.status(400).send({ error: error.message });
   }
 });
