@@ -1,4 +1,4 @@
-const calculateBmi = (height: number, weight: number) => {
+export const calculateBmi = (height: number, weight: number) => {
   if (Number.isNaN(height) || Number.isNaN(weight))
     return "Incorrect input values";
 
