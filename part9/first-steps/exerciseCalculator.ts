@@ -8,12 +8,12 @@ interface TrainingResult {
   average: number;
 }
 
-const calculateExercises = (args: trainingArguments): TrainingResult => {
+export const calculateExercises = (args: trainingArguments): TrainingResult => {
   const periodLength = args.actual.length;
-  const targetDailyExercise = 2;
+  const targetDailyExercise = args.target;
 
-  let success: boolean = true;
-  let rating: number = 1;
+  let success = true;
+  let rating = 1;
 
   const trainingDays = args.actual.filter((day) => day > 0).length;
   if (trainingDays < periodLength * 0.75) success = false;
@@ -25,7 +25,7 @@ const calculateExercises = (args: trainingArguments): TrainingResult => {
 
   const averageExerciseHours: number = actualExerciseHours / periodLength;
 
-  let description: string = "Didn't go as planned";
+  let description = "Didn't go as planned";
   switch (rating) {
     case 2:
       description = "Not too bad but could be better";
@@ -48,33 +48,32 @@ const calculateExercises = (args: trainingArguments): TrainingResult => {
 };
 
 interface trainingArguments {
-  target: number,
-  actual: number[]
+  target: number;
+  actual: number[];
 }
 
-const parseArguments = (args: string[]): trainingArguments => {
-  if (args.length < 3) throw new Error("Not enough arguments");
-
-  
-  const actualHours = args.slice(3).map((hour) => Number(hour));
-  actualHours.forEach((element) => {
-    if (Number.isNaN(element)) throw new Error("Invalid input");
-  });
-  
-  try {
-    const targetHours = Number(args[3]);
-
-    return {
-      target: targetHours,
-      actual: actualHours
-    };
-  } catch (error) {
-    throw new Error("Invalid input")
+export const parseArguments = (
+  target: string,
+  dailyHours: string[]
+): trainingArguments => {
+  if (
+    Number.isNaN(target) ||
+    dailyHours.map((hour) => Number(hour)).some(isNaN)
+  ) {
+    throw new Error("malformatted input");
   }
+
+  return {
+    target: Number(target),
+    actual: dailyHours.map((hour) => Number(hour)),
+  };
 };
 
 try {
-  const parsedArguments = parseArguments(process.argv);
+  const parsedArguments = parseArguments(
+    process.argv[3],
+    process.argv.slice(3)
+  );
   console.log(calculateExercises(parsedArguments));
 } catch (error: unknown) {
   let errorMessage = "Something bad happened. ";
