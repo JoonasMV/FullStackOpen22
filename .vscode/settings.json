@@ -1,6 +1,6 @@
 {
     "eslint.workingDirectories": [
       "./part9/first-steps",
-      "./part9/patientor"
+      "./part9/patientor/server"
     ]
   }
