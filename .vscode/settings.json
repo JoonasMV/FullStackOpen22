@@ -2,6 +2,9 @@
     "eslint.workingDirectories": [
       "./part9/first-steps",
       "./part9/patientor/server",
-      "./part9/course-info"
+      "./part9/course-info",
+      "./part9/flight-diary/server",
+      "./part9/flight-diary/client"
+
     ]
   }
