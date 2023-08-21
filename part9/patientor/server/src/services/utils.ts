@@ -32,7 +32,7 @@ const toNewPatient = (patient: unknown): patientToAdd => {
     "name" in patient &&
     "dateOfBirth" in patient &&
     "gender" in patient &&
-    "occupation" in patient
+    "occupation" in patient 
   ) {
     const newPatient: patientToAdd = {
       ssn: parseString(patient.ssn),

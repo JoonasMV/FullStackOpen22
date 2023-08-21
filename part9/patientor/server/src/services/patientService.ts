@@ -10,6 +10,7 @@ const getPatients = () => {
 
 const getPatientById = (id: string): Patient | undefined => {
   const patient = patientData.find((p) => p.id === id);
+  console.log(data);
   return patient;
 };
 
@@ -27,7 +28,6 @@ const addNewPatient = (entry: patientToAdd): Patient => {
   const newPatientEntry = {
     id: uuid(),
     ...entry,
-    entries: [],
   };
 
   patientData.push(newPatientEntry);
