@@ -40,6 +40,7 @@ const toNewPatient = (patient: unknown): patientToAdd => {
       dateOfBirth: parseString(patient.dateOfBirth),
       gender: parseGender(patient.gender),
       occupation: parseString(patient.occupation),
+      entries: []
     };
     return newPatient;
   }
