@@ -10,7 +10,6 @@ const getPatients = () => {
 
 const getPatientById = (id: string): Patient | undefined => {
   const patient = patientData.find((p) => p.id === id);
-  console.log(data);
   return patient;
 };
 
