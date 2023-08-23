@@ -4,7 +4,7 @@ const isString = (text: unknown): text is string => {
   return typeof text === "string";
 };
 
-const parseString = (text: unknown): string => {
+export const parseString = (text: unknown): string => {
   if (!isString(text) || !text) {
     throw new Error("invalid string");
   }
