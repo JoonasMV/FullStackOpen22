@@ -1,37 +1,54 @@
-import { Button, Menu, MenuItem, TextField } from "@mui/material";
+import {
+  Button,
+  Input,
+  InputLabel,
+  Menu,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { SyntheticEvent, useState } from "react";
-import { Entry, EntryWithoutId, Patient, newBaseEntry } from "../../types";
+import { Diagnosis, EntryWithoutId, Patient, newBaseEntry } from "../../types";
 import patients from "../../services/patients";
-import { PaidTwoTone, QuickreplyRounded } from "@mui/icons-material";
-import { useSearchParams } from "react-router-dom";
 import { AxiosError } from "axios";
 
 const EntryForm = ({
   patient,
   setPatient,
+  diagnoses,
 }: {
   patient: Patient;
   setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
+  diagnoses: Diagnosis[];
 }) => {
   const [formVisibility, setFormVisibility] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [diagnosisAnchor, setdiagnosisAnchor] = useState<null | HTMLElement>(
+    null
+  );
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [entryType, setEntryType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
+  const [patientDiagnoses, setPatientDiagnoses] = useState<Diagnosis[]>([]);
   const [dischargeDate, setDischargeDate] = useState<string>("");
   const [dischargeCriteria, setDischargeCriteria] = useState<string>("");
   const [employer, setEmployer] = useState<string>("");
   const [sickLeaveStartDate, setSickLeaveStartDate] = useState<string>("");
   const [sickLeaveEndDate, setSickLeaveEndDate] = useState<string>("");
-  const [healthCheckRating, setHealthCheckRating] = useState<number | null>(0);
+  const [healthCheckRating, setHealthCheckRating] = useState<number>(0);
 
   const open = Boolean(anchorEl);
+  const openDiagnosis = Boolean(diagnosisAnchor);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleDiagnosisMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setdiagnosisAnchor(event.currentTarget);
   };
 
   const handleClose = (type?: string) => {
@@ -39,12 +56,36 @@ const EntryForm = ({
     if (type !== undefined) setEntryType(type);
   };
 
+  const handleDiagnosisMenuClose = (diagnosis?: Diagnosis) => {
+    setdiagnosisAnchor(null);
+    if (diagnosis !== undefined)
+      setPatientDiagnoses((patientDiagnoses) =>
+        patientDiagnoses.concat(diagnosis)
+      );
+  };
+
+  const clearFields = () => {
+    setEntryType("");
+    setDescription("");
+    setDate("");
+    setSpecialist("");
+    setPatientDiagnoses([]);
+    setDischargeDate("");
+    setDischargeCriteria("");
+    setEmployer("");
+    setSickLeaveStartDate("");
+    setSickLeaveEndDate("");
+    setHealthCheckRating(0);
+  };
+
   const submitEntry = async (event: SyntheticEvent) => {
     event.preventDefault();
+    const diagnosisCodes = patientDiagnoses.map((d) => d.code);
     const newEntry: newBaseEntry = {
       description,
       date,
       specialist,
+      diagnosisCodes,
     };
 
     try {
@@ -123,12 +164,13 @@ const EntryForm = ({
           break;
         }
       }
+      clearFields();
     } catch (error) {
       let errorMessage = "Something went wrong";
       if (error instanceof AxiosError) {
         errorMessage = error.response?.data;
       }
-      console.log(errorMessage)
+      console.log(errorMessage);
       setErrorMessage(errorMessage);
       setTimeout(() => setErrorMessage(""), 5000);
     }
@@ -163,15 +205,15 @@ const EntryForm = ({
               value={employer}
             />
             <h2>Sick leave</h2>
-            <TextField
-              label="Start date"
-              variant="standard"
+            <InputLabel>Sick leave start date</InputLabel>
+            <Input
+              type="date"
               onChange={(e) => setSickLeaveStartDate(e.target.value)}
               value={sickLeaveStartDate}
             />
-            <TextField
-              label="End date"
-              variant="standard"
+            <InputLabel>Sick leave end date</InputLabel>
+            <Input
+              type="date"
               onChange={(e) => setSickLeaveEndDate(e.target.value)}
               value={sickLeaveEndDate}
             />
@@ -179,12 +221,18 @@ const EntryForm = ({
         );
       case "HealthCheck":
         return (
-          <TextField
-            label="Helth check rating"
-            variant="standard"
-            onChange={(e) => setHealthCheckRating(Number(e.target.value))}
-            value={healthCheckRating}
-          />
+          <>
+            <InputLabel>Health rating</InputLabel>
+            <Select
+              onChange={(e) => setHealthCheckRating(Number(e.target.value))}
+              value={healthCheckRating}
+            >
+              <MenuItem value={0}>Healthy</MenuItem>
+              <MenuItem value={1}>Low risk</MenuItem>
+              <MenuItem value={2}>High risk</MenuItem>
+              <MenuItem value={3}>Critical risk</MenuItem>
+            </Select>
+          </>
         );
 
       case "Basic":
@@ -214,9 +262,10 @@ const EntryForm = ({
               onChange={(e) => setDescription(e.target.value)}
               value={description}
             />
-            <TextField
-              label="Date"
-              variant="standard"
+            <br />
+            <InputLabel>Date</InputLabel>
+            <Input
+              type="date"
               onChange={(e) => setDate(e.target.value)}
               value={date}
             />
@@ -226,6 +275,55 @@ const EntryForm = ({
               onChange={(e) => setSpecialist(e.target.value)}
               value={specialist}
             />
+            <div style={{ fontSize: "20px" }}>
+              <strong>Diagnosis codes</strong>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                marginTop: "4px",
+              }}
+            >
+              {patientDiagnoses.map((d) => (
+                <div
+                  style={{
+                    marginRight: "4px",
+                    fontSize: "bigger",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    setPatientDiagnoses(patientDiagnoses.filter((i) => i !== d))
+                  }
+                >
+                  {d.code},
+                </div>
+              ))}
+            </div>
+            <Menu
+              anchorEl={diagnosisAnchor}
+              open={openDiagnosis}
+              onClose={() => handleDiagnosisMenuClose()}
+            >
+              {diagnoses.map((d) => {
+                return (
+                  <MenuItem
+                    key={d.code}
+                    onClick={() => handleDiagnosisMenuClose(d)}
+                  >
+                    <div>{d.code}</div>
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+            <Button
+              onClick={handleDiagnosisMenu}
+              variant="contained"
+              color="secondary"
+              style={{ width: "fit-content" }}
+            >
+              Add diagnosis
+            </Button>
             {getFormDetails(entryType)}
           </div>
 

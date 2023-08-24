@@ -30,7 +30,6 @@ patientRouter.post("/:id/entries", (req, res) => {
   if (patient === undefined) {
     return res.status(404).send("Patient not found");
   }
-
   try {
     const newEntry = toNewEntry(req.body);
     const addedEntry = patientService.addEntry(patient, newEntry);

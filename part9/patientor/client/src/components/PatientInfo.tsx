@@ -24,7 +24,7 @@ const genderIcon = (gender: Gender) => {
 const PatientInfo = () => {
   const id = useParams().id;
   const [patient, setPatient] = useState<Patient>();
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>();
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
     if (id !== undefined) {
@@ -32,9 +32,7 @@ const PatientInfo = () => {
     }
     diagnosesService.getAll().then((d) => setDiagnoses(d));
   }, [id]);
-
-  if (diagnoses !== undefined) {
-  }
+  
   if (patient === undefined) return <div>Invalid id</div>;
 
   return (
@@ -42,7 +40,7 @@ const PatientInfo = () => {
       <h2>{patient?.name} {genderIcon(patient.gender)}</h2>
       <div>ssn: {patient?.ssn}</div>
       <div>occupation: {patient?.occupation}</div>
-      <EntryForm patient={patient} setPatient={setPatient} />
+      <EntryForm patient={patient} setPatient={setPatient} diagnoses={diagnoses} />
       <h2>Entries</h2>
       {patient.entries.map((entry) => (
         <div key={entry.id}  style={{ border: "2px solid black" }}>
