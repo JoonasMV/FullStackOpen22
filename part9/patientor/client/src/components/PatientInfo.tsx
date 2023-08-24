@@ -7,6 +7,7 @@ import EntryDetails from "./EntryDetails";
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
+import EntryForm from "./EntryForm";
 
 const genderIcon = (gender: Gender) => {
   switch (gender) {
@@ -41,10 +42,10 @@ const PatientInfo = () => {
       <h2>{patient?.name} {genderIcon(patient.gender)}</h2>
       <div>ssn: {patient?.ssn}</div>
       <div>occupation: {patient?.occupation}</div>
-
+      <EntryForm patient={patient} setPatient={setPatient} />
       <h2>Entries</h2>
       {patient.entries.map((entry) => (
-        <div key={entry.date}  style={{ border: "2px solid black" }}>
+        <div key={entry.id}  style={{ border: "2px solid black" }}>
           <EntryDetails entry={entry} />
 
           {diagnoses?.filter((d) => entry.diagnosisCodes?.includes(d.code))
