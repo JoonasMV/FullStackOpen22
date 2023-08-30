@@ -1,5 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const { v1: uuid } = require("uuid");
 
 let authors = [
   {
@@ -102,14 +103,24 @@ const typeDefs = `
       dummy: Int
       bookCount: Int!
       authorCount: Int! 
-      allBooks(author: String): [Book!]!
+      allBooks(author: String, genre: String): [Book!]!
       allAuthors: [Author!]!
     }
+
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String]!
+    ): Book!,
+    editAuthor(name: String!, setBornTo: Int!): Author
+  }
 
     type Author {
       name: String!
       id: ID!
-      born: String!
+      born: String
       bookCount: Int!
     }
 
@@ -128,17 +139,43 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: (root, args) => {
-      if(args.name) return books
-      const asd = books.filter(b => args.author === b.author)
-      console.log(asd)
-      return asd
+      if (Object.values(args).length === 0) return books;
+
+      let result;
+      if (args.genre) {
+        result = books.filter((b) => b.genres.includes(args.genre));
+      }
+      if (args.author) {
+        result = books.filter((b) => args.author === b.author);
+      }
+      return result;
     },
-    allAuthors: () => authors
+    allAuthors: () => authors,
+  },
+
+  Mutation: {
+    addBook: (root, args) => {
+      const book = { ...args, id: uuid() };
+      books = books.concat(book);
+
+      if (!book.author.includes(authors)) {
+        authors = authors.concat({ name: book.author, id: uuid() });
+      }
+      return book;
+    },
+    editAuthor: (root, { name, setBornTo }) => {
+      const author = authors.find((a) => a.name === name);
+      if (!author) return null;
+
+      const updatedAuthor = { ...author, born: setBornTo };
+       authors = authors.map((a) => (a.id === author.id ? author : a));
+      return updatedAuthor;
+    },
   },
 
   Author: {
-    bookCount: () => books.length
-  }
+    bookCount: () => books.length,
+  },
 };
 
 const server = new ApolloServer({
