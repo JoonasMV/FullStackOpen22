@@ -138,6 +138,7 @@ const resolvers = {
     dummy: () => 0,
     bookCount: () => books.length,
     authorCount: () => authors.length,
+    allAuthors: () => authors,
     allBooks: (root, args) => {
       if (Object.values(args).length === 0) return books;
 
@@ -150,7 +151,10 @@ const resolvers = {
       }
       return result;
     },
-    allAuthors: () => authors,
+  },
+
+  Author: {
+    bookCount: (root) => books.filter((b) => b.author === root.name).length,
   },
 
   Mutation: {
@@ -168,13 +172,9 @@ const resolvers = {
       if (!author) return null;
 
       const updatedAuthor = { ...author, born: setBornTo };
-       authors = authors.map((a) => (a.id === author.id ? author : a));
+      authors = authors.map((a) => (a.id === author.id ? author : a));
       return updatedAuthor;
     },
-  },
-
-  Author: {
-    bookCount: () => books.length,
   },
 };
 
