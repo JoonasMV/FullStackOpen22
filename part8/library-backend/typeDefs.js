@@ -5,6 +5,7 @@ type Query {
     authorCount: Int! 
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
 type Mutation {
@@ -15,6 +16,15 @@ type Mutation {
     genres: [String]!
   ): Book!,
   editAuthor(name: String!, setBornTo: Int!): Author
+
+  createUser(
+    username: String!
+    favoriteGenre: String!
+  ): User
+  login(
+    username: String!
+    password: String!
+  ): Token
 }
 
   type Author {
@@ -30,5 +40,15 @@ type Mutation {
     author: Author!
     genres: [String!]!
     id: ID!
+  }
+
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
   }
 `;
