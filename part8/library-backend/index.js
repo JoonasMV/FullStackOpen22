@@ -1,24 +1,24 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { v1: uuid } = require("uuid");
-const mongoose = require("mongoose")
-const Book = require("./models/Book")
+const mongoose = require("mongoose");
+const Book = require("./models/Book");
 const Author = require("./models/Author");
-// const { authors, books } = require("./data");
 const typeDefs = require("./typeDefs");
+const { GraphQLError } = require("graphql")
 
-require("dotenv").config()
+require("dotenv").config();
 const MONGO_URI = process.env.MONGO_URI;
 
-console.log("Connecting to", MONGO_URI)
+console.log("Connecting to", MONGO_URI);
 
-mongoose.connect(MONGO_URI)
+mongoose
+  .connect(MONGO_URI)
   .then(() => {
-    console.log('connected to MongoDB')
+    console.log("connected to MongoDB");
   })
   .catch((error) => {
-    console.log('error connection to MongoDB:', error.message)
-  })
+    console.log("error connection to MongoDB:", error.message);
+  });
 
 const resolvers = {
   Query: {
@@ -26,17 +26,21 @@ const resolvers = {
     authorCount: async () => Author.collection.countDocuments(),
     allAuthors: async () => Author.find({}),
     allBooks: async (root, args) => {
-      return Book.find({});
-      // if (Object.values(args).length === 0) return books;
+      if (Object.values(args).length === 0) {
+        return await Book.find({});
+      }
 
-      // let result;
-      // if (args.genre) {
-      //   result = books.filter((b) => b.genres.includes(args.genre));
-      // }
-      // if (args.author) {
-      //   result = books.filter((b) => args.author === b.author);
-      // }
-      // return result;
+      let result;
+      
+      if (args.genre) {
+        result = await Book.find({ genres: args.genre });
+      }
+      
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author });
+        result = await Book.find({ author: author._id });
+      }
+      return result;
     },
   },
 
@@ -47,16 +51,35 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
-      let author = await Author.findOne({ name: args.author })
+      let author = await Author.findOne({ name: args.author });
 
-      if(!author) {
-        author = new Author({ name: args.author })
-        await author.save()
+      if (!author) {
+        author = new Author({ name: args.author });
+        try {
+          await author.save();
+        } catch (error) {
+          throw new GraphQLError("Saving author failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.name,
+              error
+            }
+          })
+        }
       }
 
-      const book = new Book({ ...args, author: author.id })
-      return book.save()
-
+      const book = new Book({ ...args, author: author.id });
+      try {
+        return await book.save();
+      } catch (error) {
+        throw new GraphQLError("Saving book failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            error
+          }
+        })
+      }
     },
     editAuthor: (root, { name, setBornTo }) => {
       const author = authors.find((a) => a.name === name);
