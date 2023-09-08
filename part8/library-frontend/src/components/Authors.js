@@ -43,7 +43,7 @@ const Authors = (props) => {
           </tr>
           {authors.map((a) => (
             <tr key={a.name}>
-              <td onClick={({ target }) => setName(a.name)}>{a.name}</td>
+              <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
             </tr>
@@ -55,8 +55,8 @@ const Authors = (props) => {
       <form onSubmit={submit}>
         <div>
           <Select
-            defaultValue={""}
-            onChange={({target}) => setName(target.value)}
+            defaultValue={name}
+            onChange={e => setName(e.value)}
             options={authors.map((a) => ({ value: a.name, label: a.name }))}
           />
         </div>
