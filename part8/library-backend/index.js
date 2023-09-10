@@ -39,14 +39,14 @@ const resolvers = {
       let result;
 
       if (args.genre) {
-        result = await Book.find({ genres: args.genre });
+        result = await Book.find({ genres: args.genre }).populate("author");
       }
 
       if (args.author) {
         const author = await Author.findOne({ name: args.author });
-        result = await Book.find({ author: author._id });
+        result = await Book.find({ author: author._id }).populate("author");
       }
-      return result.populate("author");
+      return result
     },
 
     me: async (root, args, ctx) => {
@@ -124,6 +124,7 @@ const resolvers = {
     },
 
     createUser: async (root, args) => {
+      console.log(args)
       const user = new User({ ...args });
 
       try {
