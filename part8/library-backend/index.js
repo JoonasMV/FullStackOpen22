@@ -19,6 +19,7 @@ mongoose
     console.log("connected to MongoDB");
   })
   .catch((error) => {
+    console.log(MONGO_URI)
     console.log("error connection to MongoDB:", error.message);
   });
 
@@ -49,7 +50,7 @@ const resolvers = {
       return result
     },
 
-    me: async (root, args, ctx) => {
+    me: async (root, args, ctx, t) => {
       return ctx.currentUser;
     },
   },
@@ -167,8 +168,6 @@ const server = new ApolloServer({
 });
 
 startStandaloneServer(server, {
-  listen: { port: 4000 },
-
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.startsWith("Bearer ")) {
@@ -180,6 +179,8 @@ startStandaloneServer(server, {
       return { currentUser };
     }
   },
+  listen: { port: 4000 },
+
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });

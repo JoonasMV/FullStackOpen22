@@ -10,8 +10,9 @@ const App = () => {
   const [token, setToken] = useState(null)
   
   useEffect(() => {
-    if(localStorage.getItem("user-token")) {
-      setToken(localStorage.getItem("user-token"))
+    const token = localStorage.getItem("user-token") 
+    if(token) {
+      setToken(token)
     }
   }, [])
 
@@ -31,9 +32,9 @@ const App = () => {
 
       <NewBook show={page === 'add'} />
 
-      <Recommendations show={page === "recommendations" && token} />
-
       <Login show={page === "login"} setToken={setToken} token={token} />
+
+      <Recommendations show={page === "recommendations" && token} />
     </div>
   )
 }
