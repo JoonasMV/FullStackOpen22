@@ -50,7 +50,8 @@ const resolvers = {
       return result
     },
 
-    me: async (root, args, ctx, t) => {
+    me: async (root, args, ctx) => {
+      console.log(ctx)
       return ctx.currentUser;
     },
   },

@@ -2,7 +2,7 @@ import { useApolloClient, useMutation } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { CREATE_USER, LOGIN } from "../queries";
 
-const Login = ({ show, setToken, token }) => {
+const Login = ({ show, setToken, token, getUser }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -35,6 +35,7 @@ const Login = ({ show, setToken, token }) => {
       const token = result.data.login.value;
       setToken(token);
       localStorage.setItem("user-token", token);
+      getUser()
     }
   }, [result.data]); // eslint-disable-line
 
