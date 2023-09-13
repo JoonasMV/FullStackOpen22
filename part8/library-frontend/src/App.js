@@ -14,8 +14,6 @@ const App = () => {
   const [user, userResult] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'no-cache',
   });
-  console.log(userResult?.data?.me?.favoriteGenre)
-
 
   useEffect(() => {
     const token = localStorage.getItem("user-token") 
@@ -23,7 +21,7 @@ const App = () => {
       setToken(token)
     }
     user()
-  }, [])
+  }, []) // eslint-disable-line
 
   return (
     <div>

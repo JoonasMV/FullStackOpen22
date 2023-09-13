@@ -1,11 +1,10 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { BOOKS_BY_GENRE, CURRENT_USER } from "../queries";
-import { useEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+import { BOOKS_BY_GENRE } from "../queries";
+import { useEffect } from "react";
 
 const Recommendations = ({ show, favoriteGenre }) => {
   const [getBooks, { data: favoriteBooks }] = useLazyQuery(BOOKS_BY_GENRE);
 
-  console.log(favoriteGenre)
   useEffect(() => {
     getBooks({ variables: { genre: favoriteGenre } });
   }, [favoriteGenre]); // eslint-disable-line

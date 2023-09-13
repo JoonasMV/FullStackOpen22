@@ -5,13 +5,19 @@ import { useEffect, useState } from "react";
 const Books = (props) => {
   const [filteredBooks, setFilteredBooks] = useState([]);
   const result = useQuery(ALL_BOOKS);
-  
+  const [genre, setGenre] = useState("");
+
   useEffect(() => {
-    if(!result.loading) {
-      setFilteredBooks(result.data.allBooks)
+    if (!result.loading) {
+      setFilteredBooks(result.data.allBooks);
+      if (genre) {
+        setFilteredBooks(
+          result.data.allBooks.filter((b) => b.genres.includes(genre))
+        );
+      }
     }
-  }, []) // eslint-disable-line
-  
+  }, [result, genre]);
+
   if (!props.show) {
     return null;
   }
@@ -20,20 +26,12 @@ const Books = (props) => {
     return <div>Loading...</div>;
   }
 
-
   const books = result.data.allBooks;
 
   const genres = books.map((b) => b.genres).flat();
   const uniqueGenres = genres.filter(
     (value, index, array) => array.indexOf(value) === index
   );
-
-  const filterByGenre = (genre) => {
-    if(!genre) {
-      return setFilteredBooks(books);
-    }
-    setFilteredBooks(() => books.filter(b => b.genres.includes(genre)))
-  }
 
   return (
     <div>
@@ -46,22 +44,21 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks
-            .map((a) => (
-              <tr key={a.title}>
-                <td>{a.title}</td>
-                <td>{a.author.name}</td>
-                <td>{a.published}</td>
-              </tr>
-            ))}
+          {filteredBooks.map((a) => (
+            <tr key={a.title}>
+              <td>{a.title}</td>
+              <td>{a.author.name}</td>
+              <td>{a.published}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       {uniqueGenres.map((genre) => (
-        <button onClick={() => filterByGenre(genre)} key={genre}>
+        <button onClick={() => setGenre(genre)} key={genre}>
           {genre}
         </button>
       ))}
-      <button onClick={() => filterByGenre("")}>all genres</button>
+      <button onClick={() => setGenre("")}>all genres</button>
     </div>
   );
 };
