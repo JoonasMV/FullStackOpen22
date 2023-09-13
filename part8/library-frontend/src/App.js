@@ -4,12 +4,31 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
-import { useLazyQuery } from '@apollo/client'
-import { CURRENT_USER } from './queries'
+import { useApolloClient, useLazyQuery, useSubscription } from '@apollo/client'
+import { ALL_BOOKS, BOOK_ADDED, CURRENT_USER } from './queries'
+
+// function that takes care of manipulating cache
+export const updateCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same person twice
+  const uniqByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.name
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    }
+  })
+}
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
+  const client = useApolloClient();
   
   const [user, userResult] = useLazyQuery(CURRENT_USER, {
     fetchPolicy: 'no-cache',
@@ -22,6 +41,21 @@ const App = () => {
     }
     user()
   }, []) // eslint-disable-line
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data.data.bookAdded;
+      window.alert("Book added ", addedBook.title)
+
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook)
+        }
+      })
+    }
+  })
 
   return (
     <div>
