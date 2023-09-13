@@ -52,4 +52,8 @@ type Mutation {
   type Token {
     value: String!
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `;
