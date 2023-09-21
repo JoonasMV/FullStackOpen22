@@ -1,0 +1,16 @@
+Script started on 2023-09-18 11:05:05+03:00 [TERM="xterm-256color" TTY="/dev/pts/6" COLUMNS="92" LINES="55"]
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+[?2004h]0;joonas@DESKTOP-KMSKMBN: ~[01;32mjoonas@DESKTOP-KMSKMBN[00m:[01;34m~[00m$ [7mdocker run -it ubuntu bash[27mdocker run -it ubuntu bash
+[?2004l[?2004h]0;root@1cd575b3a6fd: /root@1cd575b3a6fd:/# [K]0;root@1cd575b3a6fd: /root@1cd575b3a6fd:/# [7mmkdir /usr/src/app[27mmkdir /usr/src/app
+[?2004l[?2004h]0;root@1cd575b3a6fd: /root@1cd575b3a6fd:/# [7mtouch /usr/src/app/index.js[27mtouch /usr/src/app/index.js
+[?2004l[?2004h]0;root@1cd575b3a6fd: /root@1cd575b3a6fd:/# [Kexit
+[?2004lexit
+[?2004h]0;joonas@DESKTOP-KMSKMBN: ~[01;32mjoonas@DESKTOP-KMSKMBN[00m:[01;34m~[00m$ lks[K[Ks
+[?2004lexercise12_2.txt
+[?2004h]0;joonas@DESKTOP-KMSKMBN: ~[01;32mjoonas@DESKTOP-KMSKMBN[00m:[01;34m~[00m$ cat exercise12_2.txt 
+[?2004l[?2004h]0;joonas@DESKTOP-KMSKMBN: ~[01;32mjoonas@DESKTOP-KMSKMBN[00m:[01;34m~[00m$ exot[K[Kit
+[?2004lexit
+
+Script done on 2023-09-18 11:05:40+03:00 [COMMAND_EXIT_CODE="0"]
