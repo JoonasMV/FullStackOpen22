@@ -17,7 +17,6 @@ router.post('/', async (req, res) => {
     done: false
   })
   const count = await getAsync("count")
-  console.log(count)
   count ? setAsync("count", parseInt(count) + 1) : setAsync("count", 1)
 
   return res.send(todo);
