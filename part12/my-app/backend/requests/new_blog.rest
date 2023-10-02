@@ -1,0 +1,36 @@
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhhaXN1bGkiLCJpZCI6IjYzNjUwMzMzYTlhMTcyY2M3M2UzMDUxNyIsImlhdCI6MTY2NzU2NDM0Nn0.MnzMhzYB6hA2ZUUoCY7I88RKL9LUBJxOA0Sn13qewEo
+
+{
+  "title": "Dam boi",
+  "author": "boi",
+  "url": "www.testi.com",
+  "likes": 123
+}
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkhhaXN1bGkiLCJpZCI6IjYzNjUwMzMzYTlhMTcyY2M3M2UzMDUxNyIsImlhdCI6MTY2NzU2NDM0Nn0.MnzMhzYB6hA2ZUUoCY7I88RKL9LUBJxOA0Sn13qewEo
+
+{
+  "title": "Why",
+  "author": "wammy",
+  "url": "www.glug.com",
+  "likes": 98
+}
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "adadad",
+  "author": "asd",
+  "url": "www.testi.com",
+  "likes": 123
+}
+###
+
+DELETE http://localhost:3003/api/blogs
