@@ -22,6 +22,7 @@ const tokenExtractor = (req, res, next) => {
 };
 
 const blogFinder = async (req, res, next) => {
+  console.log(req.params.id)
   req.blog = await Blog.findByPk(req.params.id);
   next();
 };
@@ -48,10 +49,12 @@ router.put("/:id", blogFinder, async (req, res) => {
   return res.json({ likes: blog.likes });
 });
 
-router.delete("/:id", blogFinder, async (req, res) => {
-  if (req.blog) {
-    await req.blog.destroy();
+router.delete("/:id", blogFinder, tokenExtractor, async (req, res) => {
+  if (!(req.decodedToken.id === req.blog.userId)) {
+    return res.sendStatus(403)
   }
+  
+  await req.blog.destroy();
   return res.sendStatus(200);
 });
 
