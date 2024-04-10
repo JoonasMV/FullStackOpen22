@@ -29,22 +29,23 @@ const blogFinder = async (req, res, next) => {
 };
 
 router.get("/", async (req, res) => {
-  let search = "";
+  let where = {};
 
   if (req.query.search) {
-    search = `%${req.query.search}%`;
+    where = {
+      [Op.or]: [
+        { title: { [Op.iLike]: `%${req.query.search}%` } },
+        { author: { [Op.iLike]: `%${req.query.search}%` } },
+      ],
+    };
   }
 
   const blogs = await Blog.findAll({
     include: {
       model: User,
     },
-    where: {
-      [Op.or]: [
-        { title: { [Op.iLike]: search } },
-        { author: { [Op.iLike]: search } },
-      ],
-    },
+    where,
+    order: [["likes", "DESC"]]
   });
   return res.send(blogs);
 });
