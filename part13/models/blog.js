@@ -30,7 +30,8 @@ Blog.init(
       type: DataTypes.INTEGER,
       validate: {
         isValidYear(year) {
-          if (year < 1991 || year > Date.getFullYear()) {
+          const date = new Date()
+          if (year < 1991 || year > date.getFullYear()) {
             throw new Error("Invalid year")
           }
         }
