@@ -23,8 +23,8 @@ module.exports = {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
     });
     
     await queryInterface.createTable("users", {
@@ -48,10 +48,10 @@ module.exports = {
           isEmail: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
         },
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
     });
-    await queryInterface.addColumn("blogs", "userId", {
+    await queryInterface.addColumn("blogs", "user_id", {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: { model: "users", key: "id" },
