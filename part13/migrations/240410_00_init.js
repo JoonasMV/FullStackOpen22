@@ -26,7 +26,7 @@ module.exports = {
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
     });
-    
+
     await queryInterface.createTable("users", {
       id: {
         type: DataTypes.INTEGER,

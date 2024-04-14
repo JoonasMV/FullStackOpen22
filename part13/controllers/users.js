@@ -4,9 +4,27 @@ const { User, Blog } = require("../models");
 
 userRouter.get("/", async (req, res) => {
   const users = await User.findAll({
-    include: Blog,
+    include: [
+      { model: Blog },
+      { model: Blog, as: "readings", through: { attributes: [] } },
+    ],
   });
   res.json(users);
+});
+
+userRouter.get("/:id", async (req, res) => {
+  const user = await User.findByPk(req.params.id, {
+    attributes: ["name", "username"],
+    include: [
+      {
+        model: Blog,
+        as: "readings",
+        through: { attributes: [] },
+        attributes: { exclude: ["createdAt", "updatedAt", "userId"] },
+      },
+    ],
+  });
+  res.json(user);
 });
 
 userRouter.post("/", async (req, res) => {
