@@ -28,7 +28,7 @@ userRouter.get("/:id", async (req, res) => {
       {
         model: Blog,
         as: "readings",
-        through: { attributes: [] },
+        through: { attributes: ["id", "read"] },
         attributes: { exclude: ["createdAt", "updatedAt", "userId"] },
       },
     ],
