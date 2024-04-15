@@ -26,6 +26,11 @@ User.init(
         isEmail: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
       }
     },
+    // disabled: {
+    //   type: DataTypes.BOOLEAN,
+    //   allowNull: false,
+    //   defaultValue: true
+    // }
   },
   {
     sequelize,
